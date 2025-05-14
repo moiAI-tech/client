@@ -34,6 +34,7 @@ import promptsManager from './prompts';
 import fs from 'fs';
 import { exec } from 'node:child_process';
 import { notificationManager } from './app/NotificationManager';
+import { DocxWrite } from './tools/DocxWrite';
 
 dbManager
   .init()
@@ -48,6 +49,21 @@ dbManager
     await serverManager.init();
     await appManager.init();
     await promptsManager.init();
+
+    // new DocxWrite().invoke({
+    //   path: 'C:\\Users\\Administrator\\Desktop\\moi\\moi-test.docx',
+    //   data: [
+    //     { type: 'title', content: '这是标题' },
+    //     { type: 'paragraph', content: '这是标题', headingLevel: 1 },
+    //     {
+    //       type: 'paragraph',
+    //       content: '这是正文\n这是正文\n这是正文',
+    //       comment: '这是批注',
+    //     },
+    //     { type: 'paragraph', content: '这是标题2', headingLevel: 2 },
+    //   ],
+    // });
+
     return true;
   })
   .catch((error) => {
@@ -181,8 +197,8 @@ const createWindow = async () => {
   mainWindow = new BrowserWindow({
     show: false,
     width: 1024,
-    height: 728,
-    minHeight: 728,
+    height: 900,
+    minHeight: 900,
     icon: getAssetPath('icon.png'),
     autoHideMenuBar: process.platform === 'darwin' ? false : app.isPackaged,
     //transparent: process.platform === 'darwin',

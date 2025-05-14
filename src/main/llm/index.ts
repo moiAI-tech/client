@@ -42,7 +42,7 @@ export async function getChatModel(
     throw new Error('Model not enable');
   }
 
-  let llm;
+  let llm: BaseChatModel;
   if (provider?.type === ProviderType.OLLAMA) {
     llm = new ChatOllama({
       baseUrl: provider.api_base, // Default value

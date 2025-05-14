@@ -6,7 +6,7 @@ export interface ContentProps {
 
 export default function Content({ children }: ContentProps) {
   return (
-    <div className="w-full h-full overflow-hidden border border-gray-300 border-solid dark:border-gray-600 rounded-2xl">
+    <div className="overflow-hidden w-full h-full border-l border-solid dark:border-gray-700">
       {children}
     </div>
   );

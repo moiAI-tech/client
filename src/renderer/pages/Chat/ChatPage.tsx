@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Link,
   Route,
@@ -29,11 +29,14 @@ import ChatPlannerContent from './ChatPlannerContent';
 
 export default function ChatPage() {
   const chatListRef = useRef<ChatListRef | null>(null);
-  const [mode, setMode] = useState<ChatMode | null>(null);
+  const [mode, setMode] = useState<ChatMode | undefined>(undefined);
+  const [agentName, setAgentName] = useState<string | undefined>();
   const navigate = useNavigate();
   const location = useLocation();
   useEffect(() => {
     // ?mode=default
+    const agentName = location.pathname.substring(1);
+    setAgentName(agentName);
     if (location.search) {
       const s = {};
       location.search
@@ -44,17 +47,38 @@ export default function ChatPage() {
           s[key] = value;
         });
       const _mode = s['mode'];
+
       setMode(_mode);
     }
   }, [location.search]);
 
-  const onNewChat = async (mode: ChatMode) => {
-    const chat = await window.electron.chat.create(mode);
-    if (chatListRef.current) {
-      chatListRef.current.getData(true);
+  const title = useMemo(() => {
+    if (agentName) {
+      const agent = agentName.split('/')[0];
+      if (agent) {
+        return t(`sidebar.${agent}`);
+      }
+      return agentName.split('/')[0];
     }
+    return '';
+  }, [agentName]);
+
+  const description = useMemo(() => {
+    if (agentName) {
+      const agent = agentName.split('/')[0];
+      if (agent) {
+        return t(`sidebar.${agent}_description`);
+      }
+      return agentName.split('/')[0];
+    }
+    return '';
+  }, [agentName]);
+
+  const onNewChat = async (mode: ChatMode) => {
+    const chat = await window.electron.chat.create(mode, null, agentName);
+
     if (chat) {
-      navigate(`/chat/${chat.id}?mode=${mode}`);
+      navigate(`/${agentName}/${chat.id}?mode=${mode}`);
     }
   };
   return (
@@ -65,7 +89,12 @@ export default function ChatPage() {
         <div className="flex flex-col flex-1 w-full min-w-0 h-full min-h-full">
           <Routes>
             {(mode == 'default' || mode == 'agent') && (
-              <Route path="*" element={<ChatContent />} />
+              <Route
+                path="*"
+                element={
+                  <ChatContent title={title} description={description} />
+                }
+              />
             )}
             {mode == 'file' && <Route path="*" element={<ChatFileContent />} />}
             {mode == 'planner' && (

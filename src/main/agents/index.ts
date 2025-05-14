@@ -10,7 +10,7 @@ import { getChatModel, getDefaultLLMModel } from '../llm';
 import settingsManager from '../settings';
 import providersManager from '../providers';
 import { ExtractAgent } from './extract/ExtractAgent';
-import { BaseAgent } from './BaseAgent';
+import { AgentMessageEvent, BaseAgent } from './BaseAgent';
 import { dbManager } from '../db';
 import { Agent } from '@/entity/Agent';
 import { Tool } from '@langchain/core/tools';
@@ -35,6 +35,11 @@ import {
   StateGraph,
 } from '@langchain/langgraph';
 import { ManusAgent } from './manus/ManusAgent';
+import { DraftAgent } from './draft/DraftAgent';
+import { ReviewAgent } from './review/ReviewAgent';
+import { SearchAgent } from './search/SearchAgent';
+import { BaseMessage } from '@langchain/core/messages';
+import { SummaryAgent } from './summary/SummaryAgent';
 
 export interface AgentInfo extends Agent {
   static: boolean;
@@ -55,6 +60,11 @@ export class AgentManager {
     this.registerAgent(PlannerAgent);
 
     this.registerAgent(ManusAgent);
+    this.registerAgent(DraftAgent);
+
+    this.registerAgent(ReviewAgent);
+    this.registerAgent(SearchAgent);
+    this.registerAgent(SummaryAgent);
     if (!ipcMain) return;
     ipcMain.on('agent:getList', async (event, filter?: string) => {
       event.returnValue = await this.getList(filter);
@@ -317,8 +327,18 @@ export class AgentManager {
     agent: Agent;
     store?: BaseStore;
     model?: string;
+    messageEvent?: AgentMessageEvent;
+    chatOptions?: ChatOptions;
+    signal?: AbortSignal;
   }) {
-    const { agent, store, model: providerModel } = config;
+    const {
+      agent,
+      store,
+      model: providerModel,
+      messageEvent,
+      chatOptions,
+      signal,
+    } = config;
     const { provider, modelName } = getProviderModel(
       providerModel || agent.model,
     );
@@ -344,7 +364,7 @@ export class AgentManager {
           const _agent = await this.agentRepository.findOne({
             where: { id: agentId },
           });
-          const workflow = await this.buildAgent(_agent);
+          const workflow = await this.buildAgent({ agent: _agent });
 
           agents.push(workflow);
         }
@@ -368,7 +388,14 @@ export class AgentManager {
       }
     } else if (agent.type == 'built-in') {
       const _agent = this.agents.find((x) => x.info.name == agent.name);
-      return await _agent.agent.createAgent(store, model);
+      const workflow = await _agent.agent.createAgent(
+        store,
+        model,
+        messageEvent,
+        chatOptions,
+        signal,
+      );
+      return workflow;
     }
     return null;
   }

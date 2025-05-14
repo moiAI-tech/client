@@ -6,6 +6,7 @@ import path from 'path';
 import Settings from '../../entity/Settings';
 import { Providers } from '../../entity/Providers';
 import { Chat, ChatFile, ChatMessage, ChatPlanner } from '../../entity/Chat';
+import { Files } from '../../entity/Files';
 import { KnowledgeBase, KnowledgeBaseItem } from '../../entity/KnowledgeBase';
 import { TypeormSaver } from './TypeormSaver';
 import {
@@ -51,6 +52,7 @@ export class DBManager {
         Agent,
         Tools,
         McpServers,
+        Files,
       ],
       migrations: [],
       subscribers: [],

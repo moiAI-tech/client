@@ -12,10 +12,8 @@ interface KnowledgeBaseQueryParameters extends ToolParams {
 
 export class KnowledgeBaseQuery extends BaseTool {
   schema = z.object({
-    knowledgebaseIds: z
-      .optional(z.array(z.string()))
-      .describe('knowledgebase id'),
-    question: z.string().describe('question'),
+    // knowledgebaseIds: z.array(z.string()).optional(),
+    question: z.string(),
   });
 
   output = 'path\n├── file-1.mp4\n├── file-2.mp4\n├── ...';
@@ -69,10 +67,15 @@ export class KnowledgeBaseQuery extends BaseTool {
             )
             .map(
               (x) =>
-                `<content>\n${x.document.metadata.title ? `TITLE:[${x.document.metadata.title}](${x.document.metadata.source})\n` : ''}\nPAGE CONTENT:\n${x.document.pageContent}\n</content>`,
+                `<content>\n${x.document.metadata.title ? `TITLE:[${x.document.metadata.title}](${x.document.metadata.source})\n` : ''}\nSCORE:${x.score}\n${
+                  x.reranker_score ? `RERANKER SCORE:${x.reranker_score}\n` : ''
+                }PAGE CONTENT:\n${x.document.pageContent}\n</content>`,
             );
-
-          yield output.join('\n');
+          if (output.length == 0) {
+            yield 'No result found';
+          } else {
+            yield output.join('\n');
+          }
         } catch {}
       }
       yield '';

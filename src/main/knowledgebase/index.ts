@@ -59,6 +59,7 @@ import { getLoaderFromExt } from '../loaders';
 import { notificationManager } from '../app/NotificationManager';
 import { NotificationMessage } from '@/types/notification';
 import { ChatStatus } from '@/entity/Chat';
+import { appManager } from '../app/AppManager';
 
 export interface KnowledgeBaseDocument {
   document: DocumentInterface<Record<string, any>>;
@@ -95,6 +96,7 @@ export class KnowledgeBaseManager {
         state: KnowledgeBaseItemState.Pending,
       },
       {
+        isEnable: false,
         state: KnowledgeBaseItemState.Fail,
       },
     );
@@ -287,7 +289,7 @@ export class KnowledgeBaseManager {
     if (document.metadata.source || document.metadata.title) {
       name = document.metadata.title ?? path.basename(document.metadata.source);
     }
-    await repository.insert({
+    let kbItem = {
       id: kbItemId,
       knowledgeBase: kb,
       name,
@@ -302,7 +304,9 @@ export class KnowledgeBaseManager {
         chunkOverlap: splitter.chunkOverlap,
       },
       content: document.pageContent,
-    } as KnowledgeBaseItem);
+    } as KnowledgeBaseItem;
+    await repository.insert(kbItem);
+    appManager.sendEvent(`kb:update-item`, kbItem);
 
     let documents = [];
     if (sourceType == KnowledgeBaseSourceType.Web) {
@@ -312,19 +316,31 @@ export class KnowledgeBaseManager {
       });
     }
     documents = await splitter.splitDocuments([document]);
-    const kbItem = await repository.findOne({ where: { id: kbItemId } });
+    kbItem = await repository.findOne({
+      where: { id: kbItemId },
+      relations: { knowledgeBase: true },
+    });
+    documents = documents.filter((d) => d.pageContent?.trim());
     if (documents.length > 0) {
-      await vectraStore.addDocuments(documents, {
-        kbid: Array(documents.length).fill(kb.id),
-        kbitemid: Array(documents.length).fill(kbItemId),
-        isEnable: Array(documents.length).fill(true),
-      });
-      kbItem.chunkCount = documents.length;
-      kbItem.state = KnowledgeBaseItemState.Completed;
+      try {
+        await vectraStore.addDocuments(documents, {
+          kbid: Array(documents.length).fill(kb.id),
+          kbitemid: Array(documents.length).fill(kbItemId),
+          isEnable: Array(documents.length).fill(true),
+        });
+        kbItem.chunkCount = documents.length;
+        kbItem.state = KnowledgeBaseItemState.Completed;
+      } catch (err) {
+        console.error(err);
+        kbItem.isEnable = false;
+        kbItem.state = KnowledgeBaseItemState.Fail;
+      }
     } else {
+      kbItem.isEnable = false;
       kbItem.state = KnowledgeBaseItemState.Fail;
     }
     await repository.save(kbItem);
+    appManager.sendEvent(`kb:update-item`, kbItem);
   }
 
   public queue = async (
@@ -403,7 +419,8 @@ export class KnowledgeBaseManager {
               input.config,
             );
           }
-        } catch {
+        } catch (err) {
+          console.error(err);
           notificationManager.sendNotification(`${name} 导入失败`, 'error');
         }
       }

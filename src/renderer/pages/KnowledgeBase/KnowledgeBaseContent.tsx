@@ -26,7 +26,9 @@ import { Markdown } from '@/renderer/components/common/Markdown';
 import {
   FaCheckCircle,
   FaPlus,
+  FaSearch,
   FaSpinner,
+  FaSync,
   FaTimes,
   FaTrashAlt,
 } from 'react-icons/fa';
@@ -92,18 +94,18 @@ export default function KnowledgeBaseContent(props: KnowledgeBaseContentProps) {
             label: t('knowledgebase.files'),
             value: 'file',
           },
-          {
-            label: t('knowledgebase.folders'),
-            value: 'folder',
-          },
+          // {
+          //   label: t('knowledgebase.folders'),
+          //   value: 'folder',
+          // },
           {
             label: t('knowledgebase.text'),
             value: 'text',
           },
-          {
-            label: t('knowledgebase.sitemap'),
-            value: 'sitemap',
-          },
+          // {
+          //   label: t('knowledgebase.sitemap'),
+          //   value: 'sitemap',
+          // },
         ],
       },
     },
@@ -276,7 +278,7 @@ export default function KnowledgeBaseContent(props: KnowledgeBaseContentProps) {
         if (record.state == 'pending') {
           return <FaSpinner className="w-full animate-spin"></FaSpinner>;
         } else if (record.state == 'fail') {
-          return <FaTimes color="red"></FaTimes>;
+          return <FaTimes color="red" className="w-full"></FaTimes>;
         } else {
           return (
             <FaCheckCircle color="green" className="w-full"></FaCheckCircle>
@@ -318,7 +320,7 @@ export default function KnowledgeBaseContent(props: KnowledgeBaseContentProps) {
       pagination.current = 1;
     }
     const res = window.electron.kb.get({
-      knowledgeBaseId: props.knowledgeBaseId,
+      knowledgeBaseId: knowledgeBaseId,
       filter: searchText,
       skip: (pagination.current - 1) * pagination.pageSize,
       pageSize: pagination.pageSize,
@@ -404,7 +406,17 @@ export default function KnowledgeBaseContent(props: KnowledgeBaseContentProps) {
 
   useEffect(() => {
     getData();
-  }, [props.knowledgeBaseId, searchText]);
+    window.electron.ipcRenderer.on(`kb:update-item`, (data: any) => {
+      if (data.knowledgeBase.id == knowledgeBaseId) {
+        if (pagination.current == 1) {
+          getData();
+        }
+      }
+    });
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners(`kb:update-item`);
+    };
+  }, [knowledgeBaseId, searchText]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: string[], selectedRows: any[]) => {
@@ -435,33 +447,37 @@ export default function KnowledgeBaseContent(props: KnowledgeBaseContentProps) {
       >
         <div className="flex flex-row gap-2">
           <Button
-            shape="round"
             onClick={() =>
               modalRef.current.openModal(true, { sourceType: 'web' })
             }
+            type="primary"
+            icon={<FaPlus />}
           >
             {t('knowledge.add_source')}
           </Button>
 
           <Button
-            shape="round"
+            type="primary"
             onClick={() => {
               setIsModalOpen(true);
             }}
+            icon={<FaSearch />}
           >
             {t('knowledge.search')}
           </Button>
           <Button
-            shape="round"
+            type="primary"
             onClick={() => window.electron.kb.restart(knowledgeBaseId)}
+            icon={<FaSync />}
           >
             {t('knowledge.restart')}
           </Button>
           {selectedRowKeys.length > 0 && (
             <Button
-              shape="round"
+              type="primary"
               onClick={() => onDelete(selectedRowKeys)}
               danger
+              icon={<FaTrashAlt />}
             >
               {`${t('knowledge.delete')} (${selectedRowKeys.length})`}
             </Button>
@@ -470,6 +486,7 @@ export default function KnowledgeBaseContent(props: KnowledgeBaseContentProps) {
         <div>
           <Input
             width={200}
+            placeholder={t('search')}
             value={searchText}
             onChange={(e) => {
               setSearchText(e.target.value);

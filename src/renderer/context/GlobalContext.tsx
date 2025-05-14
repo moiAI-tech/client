@@ -308,11 +308,14 @@ export function GlobalContextProvider({
         destroyOnClose
         selectedKnowledgeBases={selectedKnowledgeBases}
         setSelectedKnowledgeBases={setSelectedKnowledgeBases}
-        footer={null}
-        onSelect={(kbs) => {
-          setIsPromptsModalOpen(false);
-          value.knowledgeBase.onSelect(kbs);
+        onOk={() => {
+          setIsKnowledgeBaseModalOpen(false);
+          value.knowledgeBase.onSelect(selectedKnowledgeBases);
         }}
+        // onSelect={(kbs) => {
+        //   setIsPromptsModalOpen(false);
+        //   value.knowledgeBase.onSelect(kbs);
+        // }}
         onCancel={() => setIsKnowledgeBaseModalOpen(false)}
       ></KnowledgeBaseModal>
     </GlobalContext.Provider>

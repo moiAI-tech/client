@@ -10,7 +10,7 @@ const getDataPath = () => {
     userData = app.getAppPath();
   }
 
-  const dataPath = path.join(userData, '.data');
+  const dataPath = path.join(userData, 'data');
   if (!fs.existsSync(dataPath)) {
     fs.mkdirSync(dataPath, { recursive: true });
   }
@@ -38,4 +38,31 @@ const getModelsPath = () => {
   return modelPath;
 };
 
-export { getDataPath, getTmpPath, getModelsPath, rootPath };
+const getDefaultFileSavePath = () => {
+  let userData;
+  if (app.isPackaged) {
+    userData = app.getPath('userData');
+  } else {
+    userData = app.getAppPath();
+  }
+  const filesPath = path.join(userData, 'data', 'files');
+  if (!fs.existsSync(filesPath)) {
+    fs.mkdirSync(filesPath, { recursive: true });
+  }
+  return filesPath;
+};
+
+const getAssetsPath = () => {
+  return app.isPackaged
+    ? path.join(process.resourcesPath, 'assets')
+    : path.join(__dirname, '../../assets');
+};
+
+export {
+  getDataPath,
+  getTmpPath,
+  getModelsPath,
+  rootPath,
+  getAssetsPath,
+  getDefaultFileSavePath,
+};

@@ -12,6 +12,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { notificationManager } from '../app/NotificationManager';
 import { isArray } from '../utils/is';
 import { EventEmitter } from 'events';
+import { Files } from '@/entity/Files';
+import path from 'path';
 
 export const runAgent = async (
   agent: any,
@@ -25,6 +27,7 @@ export const runAgent = async (
     callbacks?: {
       handlerMessageCreated?: (message: BaseMessage) => Promise<void>;
       handlerMessageStream?: (message: BaseMessage) => Promise<void>;
+      handlerMessageUpdated?: (message: BaseMessage) => Promise<void>;
       handlerMessageError?: (message: BaseMessage) => Promise<void>;
       handlerMessageFinished?: (message: BaseMessage) => Promise<void>;
       handlerCustomMessage?: (message?: any) => Promise<void>;
@@ -40,18 +43,20 @@ export const runAgent = async (
       const files: any[] = x.content.filter((x) => x.type == 'file');
       if (x.content.find((x) => x.type == 'text')) {
         (x.content.find((x) => x.type == 'text') as any).text +=
-          `\n\n${files.map((z) => `[${z.name}](${z.path})`).join('\n')}`;
+          `\n${files.map((z) => `<file>[${z.name}](${z.path})</file>`).join('\n')}`;
       } else {
         x.content.push({
           type: 'text',
-          text: files.map((z) => `[${z.name}](${z.path})`).join('\n'),
+          text: files
+            .map((z) => `<file>[${z.name}](${z.path})</file>`)
+            .join('\n'),
         });
       }
       x.content = x.content.filter((x) => x.type != 'file');
-      x.additional_kwargs = {
-        ...x.additional_kwargs,
-        files: files,
-      };
+      // x.additional_kwargs = {
+      //   ...x.additional_kwargs,
+      //   files: files,
+      // };
     }
 
     if (isHumanMessage(x)) {
@@ -79,7 +84,8 @@ export const runAgent = async (
         signal: options?.signal,
         recursionLimit: options?.recursionLimit,
         configurable,
-        subgraphs: true,
+
+        //subgraphs: true,
       },
     );
     let _toolCalls = [];
@@ -95,6 +101,8 @@ export const runAgent = async (
         _lastMessage =
           data.input.messages[0][data.input.messages[0].length - 1];
         if (isHumanMessage(_lastMessage)) {
+          const content = _lastMessage.content as string;
+
           await options?.callbacks?.handlerMessageCreated?.(_lastMessage);
           _messages.push(_lastMessage);
           const aiMessage = new AIMessage({

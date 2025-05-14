@@ -73,7 +73,10 @@
     "delete": "Delete",
     "description": "Description",
     "tags": "Tags",
-    "restart": "Restart"
+    "restart": "Restart",
+    "knowledgebase": "Knowledge Base",
+    "private_database": " PRIVATE DATABASE",
+    "public_database": "PUBLIC DATABASE"
   },
   "prompts": {
     "create_prompt": "Create Prompt"
@@ -87,11 +90,13 @@
     "tool": "Tools",
     "fileChat": "File Chat",
     "export_image": "Export Image",
-    "plannerChat": "Planner Chat"
+    "plannerChat": "Planner Chat",
+    "clear_all_Message": "Delete All Message?"
   },
   "language": {
     "english": "English",
-    "chinese": "Chinese"
+    "chinese": "Chinese",
+    "japanese": "Japanese"
   },
   "save": "Save",
   "paste": "Paste",
@@ -109,7 +114,7 @@
     "chunkSize": "Chunk Size",
     "sitemap": "Sitemap",
     "folders": "Folders",
-    "files": "Files",
+    "files": "File",
     "text": "Text",
     "web": "Web",
     "chunkOverlap": "Chunk Overlap",
@@ -150,12 +155,38 @@
     "chat": "Chat",
     "prompts": "Prompts",
     "knowledgebase": "Knowledge Base",
-    "providers": "Providers",
+    "providers": "Model",
     "tools": "Tools",
     "agent": "Agent",
-    "home": "Home"
+    "home": "Home",
+    "resources": "RESOURCES",
+    "files": "Files",
+    "hireMore": "Hire More",
+    "community": "Community",
+    "assistant": "ASSISTANT",
+    "search": "Search",
+    "review": "Review",
+    "draft": "Draft",
+    "summary": "Summary"
   },
   "settings": {
-    "defaultVision": "Default Vision"
+    "defaultVision": "Default Vision",
+    "defaultFileSavePath": "Default FileSave Path",
+    "theme": {
+      "theme": "Theme"
+    }
+  },
+  "search": "Search",
+  "providers": {
+    "model_management": "Model Management",
+    "model_management_description": "Configure and manager your AI Models"
+  },
+  "files": {
+    "createdAt": "Create Time",
+    "name": "File Name",
+    "file_management": "File Management"
+  },
+  "community": {
+    "community": "Community"
   }
 }

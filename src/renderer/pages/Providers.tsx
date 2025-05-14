@@ -207,19 +207,27 @@ export default function Connections() {
       {contextHolder}
       <Content>
         <ScrollArea className="w-full h-full">
-          <div className="flex flex-col justify-between w-full">
-            <div className="px-3 mx-auto my-10 w-full max-w-2xl md:px-0">
+          <div className="flex flex-col justify-between p-4 w-full">
+            <div className="px-3 mx-auto w-full md:px-0">
               <div className="mb-6">
                 <div className="flex justify-between items-center">
-                  <div className="self-center text-2xl font-semibold">
-                    {t('Providers')}
+                  <div className="flex flex-col gap-2 self-center text-2xl font-semibold">
+                    {t('providers.model_management')}
+                    <small className="text-sm text-gray-400">
+                      {t('providers.model_management_description')}
+                    </small>
                   </div>
-                  <Button onClick={() => onCreate()} shape="round">
+                  <Button
+                    onClick={() => onCreate()}
+                    // shape="round"
+                    type="primary"
+                    icon={<FaPlus />}
+                  >
                     {t('add')}
                   </Button>
                 </div>
               </div>
-              <hr className="dark:border-gray-700 my-2.5" />
+
               <div className="my-3 mb-5">
                 {loading ? (
                   <Spin
@@ -430,35 +438,37 @@ export default function Connections() {
                                     .name
                                 }
                               </div>
-                              <div className="flex flex-row gap-2 w-full">
-                                <Form.Item
-                                  noStyle
-                                  name={[field.name, 'input_token']}
-                                >
-                                  <InputNumber
-                                    controls={false}
-                                    prefix={<FaAngleUp />}
-                                    placeholder="Input Token"
-                                    size="small"
-                                    suffix="/ 1M token"
-                                    className="w-full text-gray-400"
-                                  />
-                                </Form.Item>
+                              {false && (
+                                <div className="flex flex-row gap-2 w-full">
+                                  <Form.Item
+                                    noStyle
+                                    name={[field.name, 'input_token']}
+                                  >
+                                    <InputNumber
+                                      controls={false}
+                                      prefix={<FaAngleUp />}
+                                      placeholder="Input Token"
+                                      size="small"
+                                      suffix="/ 1M token"
+                                      className="w-full text-gray-400"
+                                    />
+                                  </Form.Item>
 
-                                <Form.Item
-                                  noStyle
-                                  name={[field.name, 'output_token']}
-                                >
-                                  <InputNumber
-                                    controls={false}
-                                    prefix={<FaAngleDown />}
-                                    placeholder="Ouput Token"
-                                    size="small"
-                                    suffix="/ 1M token"
-                                    className="w-full text-gray-400"
-                                  />
-                                </Form.Item>
-                              </div>
+                                  <Form.Item
+                                    noStyle
+                                    name={[field.name, 'output_token']}
+                                  >
+                                    <InputNumber
+                                      controls={false}
+                                      prefix={<FaAngleDown />}
+                                      placeholder="Ouput Token"
+                                      size="small"
+                                      suffix="/ 1M token"
+                                      className="w-full text-gray-400"
+                                    />
+                                  </Form.Item>
+                                </div>
+                              )}
                             </div>
                           </Form.Item>
 

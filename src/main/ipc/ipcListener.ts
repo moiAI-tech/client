@@ -18,6 +18,7 @@ import fs from 'fs';
 import path from 'path';
 import settingsManager from '../settings';
 import { platform } from 'process';
+import { getDataPath } from '../utils/path';
 
 export default function ipcListener(mainWindow: BrowserWindow) {
   ipcMain.handle(
@@ -61,6 +62,7 @@ export default function ipcListener(mainWindow: BrowserWindow) {
     event.returnValue = {
       appPath: app.getAppPath(),
       userData: app.getPath('userData'),
+      dataPath: getDataPath(),
       version: app.getVersion(),
       platform: platform,
       resourcesPath: process.resourcesPath,

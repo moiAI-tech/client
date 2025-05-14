@@ -25,32 +25,6 @@
   "DefaultTitleLLM": "默认标题生成LLM",
   "add": "添加",
   "Settings": "设置",
-  "settings.defaultReranker": "默认重排序模型",
-  "settings.defaultTTS": "默认语音生成模型",
-  "settings.defaultEmbedding": "默认嵌入模型",
-  "settings.defaultTitleLLM": "默认标题生成模型",
-  "settings.defaultLLM": "默认AI助手模型",
-  "settings.websearch_settings": "搜索引擎设置",
-  "settings.general_settings": "常规设置",
-  "settings.defaultSTT": "默认语音识别模型",
-  "settings.about": "关于我们",
-  "settings.theme": "主题模式",
-  "settings.language": "语言",
-  "settings.proxy": "网络代理",
-  "settings.proxy.system": "系统默认代理",
-  "settings.proxy.custom": "自定义代理",
-  "settings.proxy.none": "不使用代理",
-  "settings.theme.light": "☀️明亮模式",
-  "settings.theme.dark": "🌑黑暗模式",
-  "settings.theme.system": "系统默认",
-  "settings.zhipuWebSearchProApiKey": "智谱网页搜索工具ApiKey",
-  "settings.searxngApiBase": "Searxng Api Base",
-  "settings.serpapiApiKey": "Serpapi Api Key",
-  "settings.tavilyApiKey": "Tavily Api Key",
-  "settings.duckduckgo": "Duck Duck Go",
-  "settings.defaultWebSearchEngine": "默认网页搜索引擎",
-  "settings.localModelManager": "本地模型管理",
-  "settings.defaultModel": "默认模型设置",
   "chat.delete": "删除",
   "chat.editTitle": "编辑标题",
   "theme": "主题",
@@ -88,7 +62,11 @@
     "name": "名称",
     "description": "描述",
     "tags": "标签",
-    "restart": "失败重试"
+    "restart": "失败重试",
+    "knowledgebase": "知识库",
+    "private_database": "私有数据库",
+    "public_database": "内置知识库",
+    "knowledgebase_description": "存放知识文档"
   },
   "enable": "是否启用",
   "prompts": {
@@ -96,6 +74,8 @@
     "select_prompt": "选择提示词"
   },
   "chat": {
+    "llm": "模型",
+    "language": "语言",
     "prompts": "提示词",
     "export": "导出",
     "tool": "工具",
@@ -103,17 +83,21 @@
     "fileChat": "文档对话",
     "newchat": "新建聊天",
     "export_image": "导出图片",
-    "plannerChat": "计划聊天"
+    "plannerChat": "计划聊天",
+    "clear_all_Message": "是否清空所有信息"
   },
   "language": {
     "english": "英语",
-    "chinese": "中文"
+    "chinese": "中文",
+    "japanese": "日语"
   },
   "paste": "粘贴",
   "cut": "剪切",
   "selectAll": "全选",
   "providers": {
-    "manager_model": "管理模型"
+    "manager_model": "管理模型",
+    "model_management": "模型管理",
+    "model_management_description": "配置和管理你的AI模型"
   },
   "agent": {
     "config": "AI助手配置",
@@ -127,7 +111,29 @@
     "settings": "设置",
     "localModelPath": "本地模型存放目录",
     "huggingfaceUrl": "HuggingfaceUrl",
-    "defaultVision": "默认视觉模型"
+    "defaultVision": "默认视觉模型",
+    "defaultFileSavePath": "默认文件保存路径",
+    "theme": {
+      "dark": "🌑黑夜模式",
+      "light": "☀️白天模式",
+      "theme": "主题"
+    },
+    "general_settings": "常规设置",
+    "defaultModel": "默认模型",
+    "language": "语言",
+    "proxy": "代理设置",
+    "proxy.system": "系统代理",
+    "proxy.custom": "自定义代理",
+    "proxy.none": "不使用代理",
+    "websearch_settings": "网络搜索设置",
+    "localModelManager": "本地模型管理",
+    "about": "关于",
+    "defaultLLM": "默认模型",
+    "defaultTitleLLM": "默认标题生成模型",
+    "defaultEmbedding": "默认嵌入模型",
+    "defaultTTS": "默认语音生成模型",
+    "defaultSTT": "默认语音识别模型",
+    "defaultReranker": "默认重排模型"
   },
   "knowledgebase": {
     "create_knowledgebase": "创建知识库",
@@ -174,12 +180,35 @@
   "sidebar": {
     "settings": "设置",
     "theme": "主题",
-    "chat": "聊天",
-    "providers": "模型供应商",
+    "chat": "日常助手",
+    "chat_description": "您的全方位助手和伙伴，能快速响应，提供帮助",
+    "providers": "模型",
     "prompts": "提示词管理",
     "knowledgebase": "知识库管理",
     "tools": "工具管理",
     "agent": "AI助手",
-    "home": "主页"
+    "home": "主页",
+    "resources": "资源",
+    "files": "文件",
+    "community": "社区",
+    "assistant": "助手",
+    "search": "查找搜索",
+    "search_description": "支持本地文档搜索功能，可快速检索您设备上的合同、法律文件或案例库，精准定位关键条款、术语或相关案例",
+    "summary": "内容总结",
+    "summary_description": "可快速提取法律文件的核心内容，生成简明扼要的摘要",
+    "draft": "生成文书",
+    "draft_description": "可快速生成各类法律文书，可参考本地知识库文件中历史条款生成条款。支持多语言，多模版库调用",
+    "review": "文书审查",
+    "review_description": "能够快速、精准地分析您的合同文件，识别潜在风险、模糊条款以及法律漏洞。审查意见以文件内备注方式提供。支持多语种，重点条款摘要（仅支持.docx文件类型）",
+    "hireMore": "更多助手"
+  },
+  "search": "搜索",
+  "files": {
+    "createdAt": "创建时间",
+    "name": "文件名称",
+    "file_management": "文件管理"
+  },
+  "community": {
+    "community": "社区"
   }
 }

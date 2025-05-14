@@ -2,6 +2,7 @@ import React, { ForwardedRef, useEffect, useState } from 'react';
 import { Select } from 'antd';
 import { SelectProps } from 'antd/lib/select';
 import { Providers } from '@/entity/Providers';
+import { FaMicrochip } from 'react-icons/fa6';
 
 const { Option } = Select;
 
@@ -53,6 +54,7 @@ const ProviderSelect = React.forwardRef(
     return (
       <Select
         {...props}
+        prefix={<FaMicrochip />}
         showSearch
         labelRender={(props) => {
           return <div>{props?.value}</div>;

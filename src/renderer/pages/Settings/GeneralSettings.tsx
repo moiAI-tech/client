@@ -17,6 +17,9 @@ export default function GeneralSettings() {
   const { setTheme } = useTheme();
   const [proxy, setProxy] = useState<string | undefined>();
   const [proxyMode, setProxyMode] = useState<'system' | 'custom' | 'none'>();
+  const [defaultFileSavePath, setDefaultFileSavePath] = useState<
+    string | undefined
+  >(undefined);
   const [serverPort, setServerPort] = useState<number | undefined>();
   const getData = () => {
     const settings = window.electron.setting.getSettings();
@@ -27,6 +30,7 @@ export default function GeneralSettings() {
       setProxyMode('custom');
       setProxy(settings.proxy);
     }
+    setDefaultFileSavePath(settings.defaultFileSavePath);
   };
   const onChangeLanguage = (language: string) => {
     window.electron.setting.set('language', language);
@@ -38,7 +42,9 @@ export default function GeneralSettings() {
       window.electron.setting.set('proxy', proxyMode);
       getData();
     } else if (isUrl(proxy) || proxyMode === 'custom') {
-      window.electron.setting.set('proxy', proxy);
+      let _proxy = proxy;
+      if (!proxy) _proxy = 'http://127.0.0.1:10809';
+      window.electron.setting.set('proxy', _proxy);
       getData();
     }
   };
@@ -63,6 +69,11 @@ export default function GeneralSettings() {
     }
   };
 
+  const onChangeDefaultFileSavePath = () => {
+    window.electron.setting.set('defaultFileSavePath', defaultFileSavePath);
+    getData();
+  };
+
   useEffect(() => {
     getData();
   }, []);
@@ -75,7 +86,7 @@ export default function GeneralSettings() {
       </div>
       <div className="flex flex-col gap-4 p-4">
         <div className="flex flex-col gap-2">
-          <div className="font-semibold">{t('settings.theme')}</div>
+          <div className="font-semibold">{t('settings.theme.theme')}</div>
           <Select
             value={settings?.theme.mode}
             style={{ width: 200 }}
@@ -83,7 +94,7 @@ export default function GeneralSettings() {
             options={[
               { value: 'light', label: t('settings.theme.light') },
               { value: 'dark', label: t('settings.theme.dark') },
-              { value: 'system', label: t('settings.theme.system') },
+              // { value: 'system', label: t('settings.theme.system') },
             ]}
           />
         </div>
@@ -94,8 +105,9 @@ export default function GeneralSettings() {
             style={{ width: 200 }}
             onChange={onChangeLanguage}
             options={[
-              { value: 'zh-CN', label: '中文' },
-              { value: 'en-US', label: 'English' },
+              { value: 'zh-CN', label: t('language.chinese') },
+              { value: 'en-US', label: t('language.english') },
+              { value: 'ja-JP', label: t('language.japanese') },
             ]}
           />
         </div>
@@ -123,7 +135,7 @@ export default function GeneralSettings() {
             )}
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        {/* <div className="flex flex-col gap-2">
           <div className="font-semibold">{t('settings.serverEnable')}</div>
           <div className="flex flex-col gap-2 items-start">
             <Switch
@@ -147,6 +159,17 @@ export default function GeneralSettings() {
               {t('settings.serverPort.description')}
             </small>
           </div>
+        </div> */}
+        <div className="flex flex-col gap-2">
+          <div className="font-semibold">
+            {t('settings.defaultFileSavePath')}
+          </div>
+          <Input
+            value={defaultFileSavePath}
+            style={{ width: 200 }}
+            onChange={(e) => setDefaultFileSavePath(e.target.value)}
+            onBlur={() => onChangeDefaultFileSavePath()}
+          />
         </div>
       </div>
     </>

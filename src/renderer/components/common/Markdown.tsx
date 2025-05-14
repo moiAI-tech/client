@@ -18,6 +18,11 @@ import * as prod from 'react/jsx-runtime';
 import rehypeSanitize from 'rehype-sanitize';
 import rehypeCodeTitles from 'rehype-code-titles';
 import 'katex/dist/katex.min.css';
+import { visit } from 'unist-util-visit';
+import { SKIP } from 'unist-util-visit-parents';
+import ChatAttachment from '../chat/ChatAttachment';
+import { ChatInputAttachment } from '@/types/chat';
+import { marked } from 'marked';
 
 interface MyThinkProps {
   children: ReactNode;
@@ -35,11 +40,59 @@ const production = {
 };
 export function Markdown(props: MarkdownProps) {
   const [renderedContent, setRenderedContent] = useState<string | null>(null);
+  const [files, setFiles] = useState<ChatInputAttachment[]>([]);
+  function splitContextAndFiles(input: string): {
+    context: string;
+    files: string[];
+  } {
+    const fileRegex = /<file>([\s\S]*?)<\/file>/g;
+    const files: string[] = [];
+    let match: RegExpExecArray | null;
 
+    // 提取所有 <file>xxx</file> 内容
+    while ((match = fileRegex.exec(input)) !== null) {
+      files.push(match[1]);
+    }
+
+    // 去掉所有 <file>...</file> 后，剩下的就是 context
+    const context = input.replace(fileRegex, '').trim();
+
+    return { context, files };
+  }
+  function parseMarkdownFileLink(md: string): ChatInputAttachment | undefined {
+    const match = md.match(/\[([^\]]+?)\]\((.+?)\)$/);
+    const tokens = marked.lexer(md);
+    if (tokens.length == 1) {
+      const linkToken = tokens
+        .at(0)
+        ?.tokens.find((token) => token.type === 'link');
+      if (linkToken) {
+        console.log(linkToken);
+        const name = linkToken.text;
+        const path = linkToken.href;
+        const ext = `.${name.split('.').pop()}`;
+        return {
+          name,
+          path,
+          type: 'file',
+          ext: ext,
+        };
+      }
+    }
+
+    return undefined;
+  }
   useEffect(() => {
+    const { context, files } = splitContextAndFiles(props?.value);
+
+    const f = files
+      .map((file) => parseMarkdownFileLink(file))
+      .filter((x) => x !== undefined);
+    setFiles(f);
+    setRenderedContent(context);
+
     unified()
       .use(remarkParse)
-
       .use(rehypeReact, production)
       .use(remarkGfm)
       .use(remarkMath)
@@ -61,7 +114,7 @@ export function Markdown(props: MarkdownProps) {
 
       //.use(rehypeSanitize)
 
-      .process(props?.value)
+      .process(context)
       .then((res) => {
         setRenderedContent(res.toString());
 
@@ -69,15 +122,22 @@ export function Markdown(props: MarkdownProps) {
       })
       .catch((err) => {});
   }, [props?.value]);
-  return (
+  return renderedContent ? (
     <>
-      {renderedContent && (
-        <div
-          className="overflow-auto w-full max-w-max break-words prose dark:prose-invert dark prose-hr:m-0 prose-td:whitespace-pre-line"
-          dangerouslySetInnerHTML={{ __html: renderedContent }}
-          key={props?.value}
-        />
-      )}
+      <div
+        className="overflow-auto w-full max-w-max break-words prose dark:prose-invert dark prose-hr:m-0 prose-td:whitespace-pre-line"
+        dangerouslySetInnerHTML={{ __html: renderedContent }}
+        key={props?.value}
+      />
+      <div className="flex flex-wrap gap-2 p-1">
+        {files.map((file) => {
+          return (
+            <>
+              <ChatAttachment value={file} key={file.path}></ChatAttachment>
+            </>
+          );
+        })}
+      </div>
     </>
-  );
+  ) : null;
 }

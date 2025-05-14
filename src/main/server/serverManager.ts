@@ -5,6 +5,7 @@ import settingsManager from '../settings';
 import { toolsManager } from '../tools';
 import { agentManager } from '../agents';
 import { isObject } from '../utils/is';
+
 class ServerManager {
   server: Application;
 
@@ -17,7 +18,7 @@ class ServerManager {
     this.server.post(`/tools/:tool_name`, async (req, res) => {
       const toolName = req.params.tool_name;
       const methodName = req.body.method;
-      let tool = toolsManager.getTools().find((t) => t.name === toolName);
+      let tool = toolsManager.tools.find((t) => t.name === toolName);
 
       if (!tool) {
         const agent = agentManager.agents.find(

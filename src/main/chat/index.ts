@@ -12,7 +12,7 @@ import { concat } from '@langchain/core/utils/stream';
 
 // import AppDataSource from '../../data-source';
 
-import { In, Like, Repository } from 'typeorm';
+import { In, IsNull, Like, Repository } from 'typeorm';
 import * as fs from 'node:fs/promises';
 import ExcelJS, { config } from 'exceljs';
 import {
@@ -87,6 +87,8 @@ import {
   StateType,
 } from '@langchain/langgraph';
 import { isArray, isString } from '../utils/is';
+import { FileContentSearch, FileRead } from '../tools/FileSystemTool';
+import { Files } from '@/entity/Files';
 // const repository = dbManager.dataSource.getRepository(Chat);
 
 export interface ChatInfo extends Chat {
@@ -97,6 +99,8 @@ export interface ChatInfo extends Chat {
 }
 
 export class ChatManager {
+  filesRepository: Repository<Files>;
+
   chatRepository: Repository<Chat>;
 
   agentRepository: Repository<Agent>;
@@ -119,6 +123,7 @@ export class ChatManager {
     this.chatMessageRepository =
       dbManager.dataSource.getRepository(ChatMessage);
     this.providersRepository = dbManager.dataSource.getRepository(Providers);
+    this.filesRepository = dbManager.dataSource.getRepository(Files);
   }
 
   async init() {
@@ -332,6 +337,7 @@ export class ChatManager {
 
   public async getChatPage(input: {
     filter?: string;
+    agentName?: string;
     skip: number;
     pageSize: number;
     sort?: string | undefined;
@@ -346,23 +352,30 @@ export class ChatManager {
         sortField = input.sort;
       }
     }
+    const where: any = {};
+    if (input.filter) {
+      where.title = Like(`%${input.filter}%`);
+    }
+    if (input.agentName) {
+      where.agent = input.agentName;
+    } else {
+      where.agent = IsNull();
+    }
 
-    const res = await this.chatRepository.find({
-      where: input.filter ? { title: Like(`%${input.filter}%`) } : undefined,
+    const res = await this.chatRepository.findAndCount({
+      where: where,
       skip: input.skip,
       take: input.pageSize,
       order: { [sortField]: order },
     });
-    const agentIds = new Set(res.map((x) => x.agent));
+    const agentIds = new Set(res[0].map((x) => x.agent));
     const agents = await this.agentRepository.find({
       where: { id: In(Array.from(agentIds)) },
     });
 
-    const totalCount = await this.chatRepository.count({
-      where: input.filter ? { title: Like(`%${input.filter}%`) } : undefined,
-    });
+    const totalCount = res[1];
     return {
-      items: res.map((x) => ({
+      items: res[0].map((x) => ({
         ...x,
         agentName: agents.find((y) => y.id == x.agent)?.name,
         status: this.runningTasks.has(x.id) ? 'running' : 'idle',
@@ -399,10 +412,11 @@ export class ChatManager {
     const defaultTitleLLM = settingsManager.getSettings()?.defaultTitleLLM;
     if (defaultTitleLLM) {
       try {
-        const res = await this.chat(defaultTitleLLM, [
-          new HumanMessage({ content: prompt }),
-        ]);
-        if (res?.status == ChatStatus.SUCCESS) return res?.content;
+        const { modelName, provider: providerName } =
+          getProviderModel(defaultTitleLLM);
+        const llm = await getChatModel(modelName, providerName);
+        const res = await llm.invoke(prompt);
+        return res?.content;
       } catch (err) {
         console.error(err);
       }
@@ -414,6 +428,7 @@ export class ChatManager {
   async getContent(
     content: string,
     extend: ChatInputExtend | undefined = undefined,
+    chatId: string | undefined = undefined,
   ) {
     let res;
     if (typeof content == 'string') {
@@ -445,6 +460,13 @@ export class ChatManager {
             video_path: attachment.path,
           });
         } else if (attachment.type == 'file') {
+          const file = new Files(undefined, path.basename(attachment.path));
+          file.path = attachment.path;
+          file.type = 'file';
+          file.createdAt = new Date();
+          file.size = (await fs.stat(attachment.path)).size;
+          file.chatId = chatId;
+          await this.filesRepository.save(file);
           res.content.push(attachment);
         }
       }
@@ -480,7 +502,7 @@ export class ChatManager {
       }
     }
 
-    const input_content = await this.getContent(content, extend);
+    const input_content = await this.getContent(content, extend, chatId);
     if (!chat.model) {
       notificationManager.sendNotification('Model is not set', 'error');
       return;
@@ -555,7 +577,7 @@ export class ChatManager {
         message: AIMessage | ToolMessage | HumanMessage,
       ) => {
         let role;
-        if (isAIMessage(message)) {
+        if (message instanceof AIMessage || isAIMessage(message)) {
           role = 'assistant';
         } else if (isToolMessage(message)) {
           role = 'tool';
@@ -576,15 +598,25 @@ export class ChatManager {
             ChatStatus.SUCCESS,
           );
         } else {
+          const _content = isString(message.content)
+            ? [
+                {
+                  type: 'text',
+                  text: message.content,
+                },
+              ]
+            : message.content;
+          if (role == 'tool') {
+            _content[0].tool_call_id = (message as ToolMessage).tool_call_id;
+            _content[0].type = 'tool_call';
+          }
           msg = new ChatMessage(
             message.id,
             lastMesssageId,
             chat,
             modelName,
             role,
-            isString(message.content)
-              ? [{ type: 'text', text: message.content }]
-              : message.content,
+            _content,
             ChatStatus.RUNNING,
           );
         }
@@ -593,9 +625,24 @@ export class ChatManager {
           'provider_type'
         ] as string;
         msg.model = message.additional_kwargs['model'] as string;
+        // 处理文件
+        if (
+          msg.additional_kwargs.files &&
+          msg.additional_kwargs.files.length > 0
+        ) {
+          const { files } = msg.additional_kwargs;
+          const filePaths: string[] = files.map((file) => file.path);
+        }
         msg = await this.chatMessageRepository.save(msg);
         lastMesssageId = msg.id;
         event(`chat:message-changed:${chatId}`, msg);
+      },
+      handleMessageUpdate: async (message: BaseMessage) => {
+        event(`chat:message-stream:${chatId}`, {
+          chatId,
+          chatMessageId: message.id,
+          content: message.content,
+        });
       },
       handleMessageStream: async (message: AIMessage | ToolMessage) => {
         event(`chat:message-stream:${chatId}`, {
@@ -613,15 +660,33 @@ export class ChatManager {
           msg.content = [{ type: 'text', text: message.content }];
           msg.tool_calls = message?.tool_calls || [];
         } else if (isToolMessage(message)) {
-          msg.content = [
-            {
-              type: 'tool_call',
-              text: message.content?.toString()?.trim(),
-              tool_call_id: message.tool_call_id,
-              tool_call_name: message.name,
-              status: message.status,
-            },
-          ];
+          if (isArray(message.content)) {
+            msg.content = [
+              {
+                type: 'tool_call',
+                text: message.content
+                  .find((x) => x.type == 'text')
+                  .text.toString()
+                  ?.trim(),
+                tool_call_id: message.tool_call_id,
+                tool_call_name: message.name,
+                status: message.status,
+              },
+            ];
+            msg.additional_kwargs.files = message.content.filter(
+              (x) => x.type == 'file',
+            );
+          } else {
+            msg.content = [
+              {
+                type: 'tool_call',
+                text: message.content?.toString()?.trim(),
+                tool_call_id: message.tool_call_id,
+                tool_call_name: message.name,
+                status: message.status,
+              },
+            ];
+          }
         }
         msg.status = message.additional_kwargs['error']
           ? ChatStatus.ERROR
@@ -679,13 +744,16 @@ export class ChatManager {
             configurable: { chatRootPath: this.getChatPath(chatId) },
           });
         } else if (agent.type == 'built-in') {
-          await this.chatBuiltIn(
-            agent,
-            messages,
-            chat.options,
+          await this.chatBuiltIn(agent, messages, {
+            providerModel: chat.model,
+            options: chat.options,
             callbacks,
-            controller.signal,
-          );
+            signal: controller.signal,
+            configurable: {
+              chatRootPath: this.getChatPath(chatId),
+              thread_id: chatId,
+            },
+          });
         }
       } else if (chat.mode == 'planner' && chat.agent) {
         const agent = await agentManager.getAgent(chat.agent);
@@ -713,6 +781,17 @@ export class ChatManager {
     } catch (err) {
       notificationManager.sendNotification(err.message, 'error');
       console.error(err);
+      let ms = await this.chatMessageRepository.find({
+        where: { chatId: chatId, status: ChatStatus.RUNNING },
+      });
+      if (ms.length > 0) {
+        ms = ms.map((x) => {
+          x.status = ChatStatus.ERROR;
+          x.additional_kwargs['error'] = err.message;
+          return x;
+        });
+        await this.chatMessageRepository.save(ms);
+      }
     }
     if (chat?.options?.allwaysClear === true) {
       const msg = await this.chatMessageRepository.findOne({
@@ -728,6 +807,7 @@ export class ChatManager {
     }
     if (controller) {
       this.runningTasks.delete(chatId);
+
       event(`chat:changed:${chatId}`, chat);
     }
     console.info('chat end');
@@ -777,7 +857,7 @@ export class ChatManager {
     }
   }
 
-  public async buildTools(options?: ChatOptions) {
+  public async buildTools(options?: ChatOptions): Promise<BaseTool[]> {
     let tools = [] as BaseTool[];
     // if (options?.agentNames && options?.agentNames.length > 0) {
     //   const agents = agentManager.agents.filter((x) =>
@@ -818,6 +898,8 @@ export class ChatManager {
     const llm = await getChatModel(provider, modelName, options);
 
     //const checkpointer = dbManager.langgraphSaver;
+    tools.push(new FileRead());
+    tools.push(new FileContentSearch());
     const reactAgent = createReactAgent({
       llm: llm,
       tools,
@@ -994,27 +1076,57 @@ export class ChatManager {
   public async chatBuiltIn(
     agent: Agent,
     messages: BaseMessage[],
-    options?: ChatOptions | undefined,
-    callbacks?: any | undefined,
-    signal?: AbortSignal | undefined,
-    configurable?: Record<string, any> | undefined,
+    config: {
+      providerModel: string;
+      options?: ChatOptions | undefined;
+      callbacks?: any | undefined;
+      signal?: AbortSignal | undefined;
+      configurable?: Record<string, any> | undefined;
+    },
   ) {
-    const { provider, modelName } = getProviderModel(agent.model);
+    const { provider, modelName } = getProviderModel(
+      config.providerModel || agent.model,
+    );
     const providerInfo = await providersManager.getProviders();
     const providerType = providerInfo.find((x) => x.name == provider)?.type;
+    const handlerMessageCreated = config.callbacks?.['handleMessageCreated'];
+    const handlerMessageUpdate = config.callbacks?.['handleMessageUpdate'];
+    const handlerMessageFinished = config.callbacks?.['handleMessageFinished'];
+    const handlerMessageStream = config.callbacks?.['handleMessageStream'];
+    const handlerMessageError = config.callbacks?.['handleMessageError'];
+
     const _agent = await agentManager.buildAgent({
       agent,
       store: new InMemoryStore(),
-      model: agent.model,
+      model: config.providerModel || agent.model,
+      chatOptions: config.options,
+      messageEvent: {
+        created: async (msg) => {
+          await Promise.all(
+            msg.map(async (x) => {
+              await handlerMessageCreated?.(x);
+            }),
+          );
+        },
+        updated: async (msg) => {
+          await Promise.all(
+            msg.map(async (x) => {
+              await handlerMessageUpdate?.(x);
+            }),
+          );
+        },
+        finished: async (msg) => {
+          await Promise.all(
+            msg.map(async (x) => {
+              await handlerMessageFinished?.(x);
+            }),
+          );
+        },
+      },
     });
-    const handlerMessageCreated = callbacks?.['handleMessageCreated'];
-    //const handlerMessageUpdated = callbacks?.['handleMessageUpdated'];
-    const handlerMessageFinished = callbacks?.['handleMessageFinished'];
-    const handlerMessageStream = callbacks?.['handleMessageStream'];
-    const handlerMessageError = callbacks?.['handleMessageError'];
     await runAgent(_agent, messages, {
-      signal,
-      configurable,
+      signal: config.signal,
+      configurable: config.configurable,
       modelName,
       providerType,
       callbacks: {
@@ -1146,6 +1258,7 @@ export class ChatManager {
       agent,
       store: new InMemoryStore(),
       model: config?.providerModel,
+      signal: config?.signal,
     });
 
     await runAgent(reactAgent, messages, {

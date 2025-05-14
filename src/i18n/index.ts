@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import enUs from './locales/en-us.json';
 import zhCn from './locales/zh-cn.json';
+import jaJp from './locales/ja-jp.json';
 
 const option = {
   fallbackLng: 'zh-cn',
@@ -13,6 +14,9 @@ const option = {
     },
     'zh-CN': {
       translation: zhCn,
+    },
+    'ja-JP': {
+      translation: jaJp,
     },
   },
   interpolation: {

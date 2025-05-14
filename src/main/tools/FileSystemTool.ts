@@ -5,10 +5,18 @@ import fs from 'fs';
 import path from 'path';
 import tree from 'tree-node-cli';
 import { BaseTool } from './BaseTool';
+import { PPTXLoader } from '@langchain/community/document_loaders/fs/pptx';
+import { DocxLoader } from '@langchain/community/document_loaders/fs/docx';
+import { TextLoader } from 'langchain/document_loaders/fs/text';
+import { PDFLoader } from '@langchain/community/document_loaders/fs/pdf';
+import { isString } from '../utils/is';
+import settingsManager from '../settings';
 
 export interface FileWriteParameters extends ToolParams {}
 export interface FileReadParameters extends ToolParams {}
-
+export interface FileContentSearchParameters extends ToolParams {
+  embedding: string;
+}
 export class FileWrite extends BaseTool {
   schema = z.object({
     path: z.string().describe('local file path'),
@@ -16,10 +24,6 @@ export class FileWrite extends BaseTool {
   });
 
   //output = und;
-
-  static lc_name() {
-    return 'file-write';
-  }
 
   name = 'file-write';
 
@@ -39,21 +43,59 @@ export class FileWrite extends BaseTool {
   }
 }
 
-export class FileRead extends Tool {
-  static lc_name() {
-    return 'file-read';
-  }
+export class FileRead extends BaseTool {
+  schema = z.object({
+    path: z.string(),
+  });
 
   name: string = 'file-read';
 
-  description: string = 'read file';
+  description: string = 'read file content return text';
 
   constructor(params?: FileReadParameters) {
     super(params);
   }
 
-  async _call(input: string, runManager, config): Promise<string> {
-    return fs.readFileSync(input).toString();
+  async _call(
+    input: z.infer<typeof this.schema>,
+    runManager,
+    config,
+  ): Promise<string> {
+    try {
+      if (!isString(input.path)) {
+        return 'input value is not filePath';
+      }
+      const ext = path.extname(input.path).toLowerCase();
+      let content = '';
+      if (ext.toLowerCase() == '.pdf') {
+        const loader = new PDFLoader(input.path);
+        const docs = await loader.load();
+        content = docs.map((x) => x.pageContent).join('\n\n');
+      } else if (ext.toLowerCase() == '.txt') {
+        const loader = new TextLoader(input.path);
+        const docs = await loader.load();
+        content = docs.map((x) => x.pageContent).join('\n\n');
+      } else if (ext.toLowerCase() == '.docx') {
+        const loader = new DocxLoader(input.path, { type: 'docx' });
+        const docs = await loader.load();
+        return docs.map((x) => x.pageContent).join('\n\n');
+      } else if (ext.toLowerCase() == '.doc') {
+        const loader = new DocxLoader(input.path, { type: 'doc' });
+        const docs = await loader.load();
+        return docs.map((x) => x.pageContent).join('\n\n');
+      } else if (ext.toLowerCase() == '.pptx') {
+        const loader = new PPTXLoader(input.path);
+        const docs = await loader.load();
+        return docs.map((x) => x.pageContent).join('\n\n');
+      } else {
+        const loader = new TextLoader(input.path);
+        const docs = await loader.load();
+        content = docs.map((x) => x.pageContent).join('\n\n');
+      }
+      return content;
+    } catch (err) {
+      return JSON.stringify(err);
+    }
   }
 }
 
@@ -208,5 +250,33 @@ export class MoveFile extends BaseTool {
   ): Promise<string> {
     fs.renameSync(input.source, input.destination);
     return 'File moved successfully';
+  }
+}
+
+export class FileContentSearch extends BaseTool {
+  schema = z.object({
+    paths: z.array(z.string()),
+    search_content: z.string(),
+    output_count: z.number().optional().default(3),
+  });
+
+  name: string = 'file_content_search';
+
+  description: string = 'use vector search file content';
+
+  embedding: string;
+
+  constructor(params?: FileContentSearchParameters) {
+    super(params);
+    this.embedding =
+      params?.embedding || settingsManager.getSettings().defaultEmbedding;
+  }
+
+  async _call(
+    input: z.infer<typeof this.schema>,
+    runManager,
+    config,
+  ): Promise<string> {
+    return 'test';
   }
 }

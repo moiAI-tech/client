@@ -75,7 +75,7 @@ export default function DefaultModelSettings() {
             onChange={(v) => onChangeDefaultModel('defaultEmbedding', v)}
           />
         </div>
-        <div className="flex flex-col gap-2">
+        {/* <div className="flex flex-col gap-2">
           <div className="font-semibold">{t('settings.defaultTTS')}</div>
           <ProviderSelect
             type="tts"
@@ -84,7 +84,7 @@ export default function DefaultModelSettings() {
             style={{ width: 300 }}
             onChange={(v) => onChangeDefaultModel('defaultTTS', v)}
           />
-        </div>
+        </div> */}
         <div className="flex flex-col gap-2">
           <div className="font-semibold">{t('settings.defaultReranker')}</div>
           <ProviderSelect
@@ -95,7 +95,7 @@ export default function DefaultModelSettings() {
             onChange={(v) => onChangeDefaultModel('defaultReranker', v)}
           />
         </div>
-        <div className="flex flex-col gap-2">
+        {/* <div className="flex flex-col gap-2">
           <div className="font-semibold">{t('settings.defaultSTT')}</div>
           <ProviderSelect
             type="stt"
@@ -104,7 +104,7 @@ export default function DefaultModelSettings() {
             style={{ width: 300 }}
             onChange={(v) => onChangeDefaultModel('defaultSTT', v)}
           />
-        </div>
+        </div> */}
       </div>
     </>
   );

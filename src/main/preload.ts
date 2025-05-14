@@ -71,6 +71,13 @@ const electronHandler = {
     showItemInFolder: (path: string) =>
       ipcRenderer.invoke('app:showItemInFolder', path),
     trashItem: (path: string) => ipcRenderer.invoke('app:trashItem', path),
+    sendEmail: (options: {
+      to: string[];
+      subject: string;
+      body: string;
+      cc?: string[];
+      bcc?: string[];
+    }) => ipcRenderer.invoke('app:sendEmail', options),
   },
   db: {
     insert(tableName: string, data: any) {
@@ -129,6 +136,7 @@ const electronHandler = {
   chat: {
     getChatPage: (input: {
       filter?: string;
+      agentName?: string;
       skip: number;
       pageSize: number;
       sort?: string | undefined;

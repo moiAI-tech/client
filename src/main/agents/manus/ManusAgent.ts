@@ -19,6 +19,7 @@ import {
   BaseMessage,
   HumanMessage,
   SystemMessage,
+  trimMessages,
 } from '@langchain/core/messages';
 import {
   ChatPromptTemplate,

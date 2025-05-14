@@ -1,10 +1,10 @@
 {
-  "name": "aime-box",
-  "version": "0.1.5",
-  "description": "Aime Box is a tool agent box for producer.",
+  "name": "moi",
+  "version": "0.1.6",
+  "description": "moi is a tool agent box for producer.",
   "license": "Apache-2.0",
   "author": {
-    "name": "AimeBox",
+    "name": "moi",
     "email": "781172480@qq.com",
     "url": "https://github.com/AimeBox/aime-box"
   },
@@ -26,7 +26,6 @@
     "playwright": "^1.50.1",
     "sharp": "^0.33.5",
     "sherpa-onnx-node": "^1.10.46",
-    "speaker": "^0.5.5",
     "sqlite3": "^5.1.7",
     "typeorm": "^0.3.20",
     "vm2": "^3.9.19"

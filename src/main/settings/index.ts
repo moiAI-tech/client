@@ -31,9 +31,13 @@ import tar from 'tar';
 import node7z from 'node-7z';
 import axios from 'axios';
 import nodeFetch, { RequestInit, Response } from 'node-fetch';
-import { getModelsPath } from '../utils/path';
+import { getDefaultFileSavePath, getModelsPath } from '../utils/path';
 import { platform } from 'process';
 import { exec } from 'child_process';
+import {
+  getSystemProxySettings,
+  SystemProxySettings,
+} from '../utils/systemProxy';
 
 export interface GlobalSettings {
   appName: string;
@@ -69,6 +73,8 @@ export interface GlobalSettings {
   huggingfaceUrl: string | null;
   serverEnable: boolean;
   serverPort: number | null;
+  defaultFileSavePath?: string;
+  nickName?: string;
 }
 
 class SettingsManager {
@@ -92,6 +98,7 @@ class SettingsManager {
     defaultReranker: null,
     defaultWebSearchEngine: null,
     defaultVision: null,
+    defaultFileSavePath: getDefaultFileSavePath(),
     webSearchEngine: {
       zhipu: { apiKey: null },
       searxng: { apiBase: null },
@@ -102,9 +109,12 @@ class SettingsManager {
     huggingfaceUrl: 'https://huggingface.co',
     serverEnable: false,
     serverPort: 4560,
+    nickName: 'You',
   };
 
   downloadingModels: any[] = [];
+
+  systemProxy: SystemProxySettings;
 
   constructor() {
     this.settingsRepository = dbManager.dataSource.getRepository(Settings);
@@ -222,6 +232,13 @@ class SettingsManager {
         : proxy
           ? { proxyRules: proxy }
           : {};
+
+    if (proxy === 'system') {
+      this.systemProxy = await getSystemProxySettings();
+      if (this.systemProxy) {
+        proxyConfig.proxyRules = this.systemProxy.proxyServer;
+      }
+    }
     await Promise.all(sessions.map((session) => session.setProxy(proxyConfig)));
   }
 
@@ -233,6 +250,10 @@ class SettingsManager {
       ) {
         //const proxy = `${this.settingsCache?.proxy.substring(this.settingsCache?.proxy.indexOf('://') + 3)}`;
         return new HttpsProxyAgent(this.settingsCache?.proxy);
+      } else if (this.settingsCache?.proxy == 'system') {
+        if (this.systemProxy.proxyEnable) {
+          return new HttpsProxyAgent(this.systemProxy.proxyServer);
+        }
       }
     }
     return undefined;
@@ -551,3 +572,6 @@ class SettingsManager {
 
 const settingsManager = new SettingsManager();
 export default settingsManager;
+function getWindowsProxySettings(): { enable: boolean; proxy: string } {
+  throw new Error('Function not implemented.');
+}

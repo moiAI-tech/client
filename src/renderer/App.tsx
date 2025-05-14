@@ -28,6 +28,9 @@ import Link from 'antd/es/typography/Link';
 import PromptsPage from './pages/Prompts/PromptsPage';
 import KnowledgeBasePage from './pages/KnowledgeBase/KnowledgeBasePage';
 import { GlobalContextProvider } from './context/GlobalContext';
+import FilesPage from './pages/Files/FilesPage';
+import HireMore from './pages/HireMore';
+import Community from './pages/Community';
 
 function TemplatePage(props: { children: ReactNode }) {
   const Context = React.createContext({ name: 'Default' });
@@ -48,7 +51,7 @@ function TemplatePage(props: { children: ReactNode }) {
           <div className="flex overflow-auto flex-row min-h-screen max-h-full text-gray-700 bg-white dark:text-gray-100 dark:bg-gray-900">
             <Sidebar />
             <div className="flex-1 w-full min-w-0 h-screen">
-              <div className="flex justify-center py-2 pr-2 w-full h-full">
+              <div className="flex justify-center w-full h-full">
                 {children}
               </div>
             </div>
@@ -64,9 +67,29 @@ export default function App() {
     <Provider store={store}>
       <ConfigProvider
         theme={{
+          token: {
+            colorPrimary: '#474747',
+          },
+          // token: {
+          //   colorPrimaryBorder: '#ffffff',
+          //   colorPrimaryActive: '#ffffff',
+          //   colorPrimaryHover: '#ffffff',
+          // },
           components: {
+            Button: {
+              defaultActiveBg: '#cfcfcf',
+              colorBgTextActive: '#cfcfcf',
+            },
+            Input: {
+              activeBorderColor: '#cfcfcf',
+              hoverBorderColor: '#e7e7e7',
+              activeBg: '#00000000',
+            },
             Modal: {},
             Menu: {
+              itemSelectedBg: '#cfcfcf',
+              itemActiveBg: '#e7e7e7',
+              itemSelectedColor: '#000000',
               darkItemSelectedBg: '#363943',
               darkSubMenuItemBg: 'rgb(29, 32, 40) !important',
               // darkItemBg: 'rgb(29, 32, 40) !important',
@@ -81,10 +104,18 @@ export default function App() {
                 <Route path="/home" element={<Home />} />
                 <Route path="/agent/*" element={<AgentPage />} />
                 <Route path="/prompts/*" element={<PromptsPage />} />
+                <Route path="/search/*" element={<ChatPage />} />
+                <Route path="/summary/*" element={<ChatPage />} />
                 <Route path="/chat/*" element={<ChatPage />} />
+                <Route path="/draft/*" element={<ChatPage />} />
+                <Route path="/review/*" element={<ChatPage />} />
+                <Route path="/hire-more/*" element={<HireMore />} />
+                <Route path="/community/*" element={<Community />} />
+
                 <Route path="/providers" element={<Providers />} />
                 <Route path="/settings/*" element={<Settings />} />
                 <Route path="/tools" element={<Tools />} />
+                <Route path="/files" element={<FilesPage />} />
                 <Route
                   path="/knowledge-base/*"
                   element={<KnowledgeBasePage />}

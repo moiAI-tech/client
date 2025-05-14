@@ -23,7 +23,7 @@ import {
   Tag,
   message,
 } from 'antd';
-import { FaEdit, FaTrashAlt } from 'react-icons/fa';
+import { FaEdit, FaFolder, FaPlus, FaTrashAlt } from 'react-icons/fa';
 import TextArea from 'antd/es/input/TextArea';
 import List from '@/renderer/components/common/List';
 import FormModal from '@/renderer/components/modals/FormModal';
@@ -157,7 +157,9 @@ export default function KnowledgeBasePage() {
       <div className="flex flex-row w-full h-full">
         <List
           width={250}
-          onSearch={onSearch}
+          showSearch={false}
+          // onSearch={onSearch}
+          // se
           onAdd={() => {
             setCurrentKB(undefined);
             navigate(`/knowledge-base`);
@@ -165,49 +167,103 @@ export default function KnowledgeBasePage() {
           }}
         >
           <div className="flex flex-col gap-1">
-            {list.map((item, index) => {
-              return (
-                <ListItem
-                  title={item.name}
-                  subTitle={
-                    <div className="flex flex-col gap-1">
-                      <span className="line-clamp-2">{item.description}</span>
-                      <div>
-                        <Tag className="max-w-[120px] text-ellipsis whitespace-nowrap overflow-hidden">
-                          {item.embedding}
-                        </Tag>
-                      </div>
-                    </div>
-                  }
-                  active={item.id === currentKB?.id}
-                  href={`/knowledge-base/${item.id}`}
-                  menu={
-                    <div className="flex flex-col">
-                      <Button
-                        type="text"
-                        icon={<FaEdit />}
-                        onClick={(e) => {
-                          setCurrentKB(item);
-                          kbModalRef.current.openModal(true, item);
-                        }}
-                      >
-                        {t('edit')}
-                      </Button>
-                      <Popconfirm
-                        title="Delete the item?"
-                        onConfirm={() => onDelete(item)}
-                        okText="Yes"
-                        cancelText="No"
-                      >
-                        <Button type="text" danger icon={<FaTrashAlt />}>
-                          {t('delete')}
+            <div className="flex flex-row gap-2 justify-between items-center p-2 w-full">
+              <div className="flex flex-col gap-2">
+                <h1 className="text-2xl font-semibold">
+                  {t('knowledge.knowledgebase')}
+                </h1>
+                <small className="text-sm text-gray-400">
+                  {t('knowledge.knowledgebase_description')}
+                </small>
+              </div>
+            </div>
+            <div className="p-2 text-sm text-gray-400">
+              {t('knowledge.public_database')}
+            </div>
+            {list
+              .filter((x) => x.isStatic)
+              .map((item, index) => {
+                return (
+                  <ListItem
+                    title={item.name}
+                    icon={<FaFolder />}
+                    active={item.id === currentKB?.id}
+                    href={`/knowledge-base/${item.id}`}
+                    menu={
+                      <div className="flex flex-col">
+                        <Button
+                          type="text"
+                          icon={<FaEdit />}
+                          onClick={(e) => {
+                            setCurrentKB(item);
+                            kbModalRef.current.openModal(true, item);
+                          }}
+                        >
+                          {t('edit')}
                         </Button>
-                      </Popconfirm>
-                    </div>
-                  }
-                ></ListItem>
-              );
-            })}
+                        <Popconfirm
+                          title="Delete the item?"
+                          onConfirm={() => onDelete(item)}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                          <Button type="text" danger icon={<FaTrashAlt />}>
+                            {t('delete')}
+                          </Button>
+                        </Popconfirm>
+                      </div>
+                    }
+                  ></ListItem>
+                );
+              })}
+            <div className="flex flex-row justify-between items-center p-2 text-sm text-gray-400">
+              {t('knowledge.private_database')}
+              <Button
+                type="text"
+                icon={<FaPlus />}
+                onClick={() => {
+                  setCurrentKB(undefined);
+                  navigate(`/knowledge-base`);
+                  kbModalRef.current.openModal(true);
+                }}
+              />
+            </div>
+            {list
+              .filter((x) => !x.isStatic)
+              .map((item, index) => {
+                return (
+                  <ListItem
+                    title={item.name}
+                    icon={<FaFolder />}
+                    active={item.id === currentKB?.id}
+                    href={`/knowledge-base/${item.id}`}
+                    menu={
+                      <div className="flex flex-col">
+                        <Button
+                          type="text"
+                          icon={<FaEdit />}
+                          onClick={(e) => {
+                            setCurrentKB(item);
+                            kbModalRef.current.openModal(true, item);
+                          }}
+                        >
+                          {t('edit')}
+                        </Button>
+                        <Popconfirm
+                          title="Delete the item?"
+                          onConfirm={() => onDelete(item)}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                          <Button type="text" danger icon={<FaTrashAlt />}>
+                            {t('delete')}
+                          </Button>
+                        </Popconfirm>
+                      </div>
+                    }
+                  ></ListItem>
+                );
+              })}
           </div>
         </List>
         <div className="flex flex-col flex-1 w-full min-w-0 h-full min-h-full">

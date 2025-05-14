@@ -13,7 +13,7 @@ import { app } from 'electron';
 import fs from 'fs';
 
 // import sherpa_onnx from 'sherpa-onnx-node';
-import Speaker from 'speaker';
+// import Speaker from 'speaker';
 import { getModelsPath, getTmpPath } from '../utils/path';
 import { v4 as uuidv4 } from 'uuid';
 import { BaseTool } from './BaseTool';
@@ -214,23 +214,23 @@ export class TextToSpeech extends BaseTool {
     const sherpa = await this.sherpa_onnx();
 
     try {
-      sherpa.writeWave(filename, {
-        samples: audio.samples,
-        sampleRate: audio.sampleRate,
-      });
-      const speaker = new Speaker({
-        channels: 1,
-        bitDepth: 16,
-        sampleRate: audio.sampleRate,
-      });
-      const audioBuffer = fs.readFileSync(filename);
-      speaker.on('close', async (e) => {
-        if (speaker.closed) {
-          await fs.promises.unlink(filename);
-        }
-      });
-      speaker.write(audioBuffer);
-      speaker.end(() => {});
+      // sherpa.writeWave(filename, {
+      //   samples: audio.samples,
+      //   sampleRate: audio.sampleRate,
+      // });
+      // const speaker = new Speaker({
+      //   channels: 1,
+      //   bitDepth: 16,
+      //   sampleRate: audio.sampleRate,
+      // });
+      // const audioBuffer = fs.readFileSync(filename);
+      // speaker.on('close', async (e) => {
+      //   if (speaker.closed) {
+      //     await fs.promises.unlink(filename);
+      //   }
+      // });
+      // speaker.write(audioBuffer);
+      // speaker.end(() => {});
     } catch (error) {
       console.error(error);
     }

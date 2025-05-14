@@ -40,12 +40,16 @@ const ChatList = React.forwardRef((props: ChatListProps, ref) => {
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const [addButtonOpen, setAddButtonOpen] = useState(false);
   const [isPackaged, setIsPackaged] = useState(true);
+  const [agentName, setAgentName] = useState<string | null>(null);
+  const [searchText, setSearchText] = useState<string | null>(null);
   const navigate = useNavigate();
   const getData = async (clear = false) => {
     const res = await window.electron.chat.getChatPage({
+      agentName: agentName == 'chat' ? undefined : agentName,
       skip: clear ? 0 : chats.length,
       pageSize: 30,
       sort: 'timestamp desc',
+      filter: searchText,
     });
 
     setTotalCount(res.totalCount);
@@ -56,24 +60,16 @@ const ChatList = React.forwardRef((props: ChatListProps, ref) => {
       return [...preChats, ...res.items];
     });
   };
-  const onSearch = async (text: string) => {
-    const res = await window.electron.db.page<Chat>(
-      'chat',
-      text ? { title: text } : {},
-      0,
-      30,
-      'timestamp desc',
-    );
-    setTotalCount(res.totalCount);
-    setChats((preChats) => {
-      return res.items;
-    });
-  };
+
+  useEffect(() => {
+    getData(true);
+  }, [searchText]);
   async function onDelete(chat: Chat) {
     await window.electron.db.delete('chat', `id = '${chat.id}'`);
     message.success('delete success');
     setChats(chats.filter((x) => x.id != chat.id));
-    navigate(`/chat`);
+    console.log(location);
+    navigate(`/${agentName}?mode=agent`);
     // getData(true);
   }
 
@@ -86,16 +82,24 @@ const ChatList = React.forwardRef((props: ChatListProps, ref) => {
     getData,
   }));
 
-  useEffect(() => {
-    getData();
-  }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
+    const _agentName = location.pathname.substring(1).split('/')[0];
+    setAgentName(_agentName);
     const id = location.pathname.split('/')[2];
     setCurrentChatId(id);
     const appInfo = window.electron.app.info();
     setIsPackaged(appInfo.isPackaged);
   }, [location]);
+
+  useEffect(() => {
+    if (!chats.find((x) => x.id == currentChatId) && currentChatId) {
+      getData(true);
+    } else if (!currentChatId) {
+      getData(true);
+    }
+  }, [agentName, currentChatId]);
 
   const handleTitleChanged = (chat: Chat) => {
     setChats((prevChats) => {
@@ -126,64 +130,66 @@ const ChatList = React.forwardRef((props: ChatListProps, ref) => {
 
   return (
     <List
-      onSearch={onSearch}
+      onSearch={setSearchText}
+      showAddButton={false}
       dataLength={chats.length}
       hasMore={chats.length < totalCount}
       width={250}
       loadMoreData={() => {
         getData();
       }}
-      addButton={
-        <Popover
-          placement="rightTop"
-          trigger="click"
-          open={addButtonOpen}
-          onOpenChange={setAddButtonOpen}
-          content={
-            <div className="flex flex-col">
-              <Button
-                type="text"
-                block
-                icon={<FaRegMessage />}
-                onClick={() => {
-                  setAddButtonOpen(false);
-                  onNewChat('default');
-                }}
-              >
-                {t('chat.newchat')}
-              </Button>
-              {!isPackaged && (
-                <Button
-                  type="text"
-                  block
-                  icon={<FaRegMessage />}
-                  onClick={() => {
-                    setAddButtonOpen(false);
-                    onNewChat('file');
-                  }}
-                >
-                  {t('chat.fileChat')}
-                </Button>
-              )}
-              {!isPackaged && (
-                <Button
-                  type="text"
-                  block
-                  icon={<FaRegMessage />}
-                  onClick={() => {
-                    setAddButtonOpen(false);
-                    onNewChat('planner');
-                  }}
-                >
-                  {t('chat.plannerChat')}
-                </Button>
-              )}
-            </div>
-          }
-        >
-          <Button type="text" icon={<FaPlus />} className=""></Button>
-        </Popover>
-      }
+
+      // addButton={
+      //   <Popover
+      //     placement="rightTop"
+      //     trigger="click"
+      //     open={addButtonOpen}
+      //     onOpenChange={setAddButtonOpen}
+      //     content={
+      //       <div className="flex flex-col">
+      //         <Button
+      //           type="text"
+      //           block
+      //           icon={<FaRegMessage />}
+      //           onClick={() => {
+      //             setAddButtonOpen(false);
+      //             onNewChat('default');
+      //           }}
+      //         >
+      //           {t('chat.newchat')}
+      //         </Button>
+      //         {!isPackaged && (
+      //           <Button
+      //             type="text"
+      //             block
+      //             icon={<FaRegMessage />}
+      //             onClick={() => {
+      //               setAddButtonOpen(false);
+      //               onNewChat('file');
+      //             }}
+      //           >
+      //             {t('chat.fileChat')}
+      //           </Button>
+      //         )}
+      //         {!isPackaged && (
+      //           <Button
+      //             type="text"
+      //             block
+      //             icon={<FaRegMessage />}
+      //             onClick={() => {
+      //               setAddButtonOpen(false);
+      //               onNewChat('planner');
+      //             }}
+      //           >
+      //             {t('chat.plannerChat')}
+      //           </Button>
+      //         )}
+      //       </div>
+      //     }
+      //   >
+      //     <Button type="text" icon={<FaPlus />} className=""></Button>
+      //   </Popover>
+      // }
     >
       <div className="flex flex-col gap-1">
         {chats.map((chat) => {
@@ -193,10 +199,10 @@ const ChatList = React.forwardRef((props: ChatListProps, ref) => {
               icon={renderChatIcon(chat.mode)}
               active={currentChatId === chat.id}
               title={chat.title}
-              subTitle={
-                chat.mode === 'agent' && <small>@{chat.agentName}</small>
-              }
-              href={`/chat/${chat.id}?mode=${chat.mode}`}
+              // subTitle={
+              //   chat.mode === 'agent' && <small>@{chat.agentName}</small>
+              // }
+              href={`/${agentName}/${chat.id}?mode=${chat.mode}`}
               menu={
                 <div className="flex flex-col">
                   <Button

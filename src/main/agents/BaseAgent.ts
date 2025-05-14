@@ -7,6 +7,14 @@ import { Agent } from '@/entity/Agent';
 import { removeEmptyValues } from '../utils/common';
 import { BaseStore } from '@langchain/langgraph';
 import { BaseChatModel } from '@langchain/core/language_models/chat_models';
+import { BaseMessage } from '@langchain/core/messages';
+
+export interface AgentMessageEvent {
+  created?: (msg: BaseMessage[]) => Promise<void>;
+  updated?: (msg: BaseMessage[]) => Promise<void>;
+  finished?: (msg: BaseMessage[]) => Promise<void>;
+  deleted?: (msg: BaseMessage[]) => Promise<void>;
+}
 
 export abstract class BaseAgent extends Tool {
   abstract name: string;
@@ -16,25 +24,6 @@ export abstract class BaseAgent extends Tool {
   abstract tags: string[];
 
   declare schema;
-  // declare schema: z.ZodEffects<
-  //   z.ZodObject<
-  //     {
-  //       input: z.ZodOptional<z.ZodString>;
-  //     },
-  //     'strip',
-  //     z.ZodTypeAny,
-  //     {
-  //       input?: string | undefined;
-  //     },
-  //     {
-  //       input?: string | undefined;
-  //     }
-  //   >,
-  //   string | undefined,
-  //   {
-  //     input?: string | undefined;
-  //   }
-  // >;
 
   agentOptions?: {
     provider: string;
@@ -70,7 +59,13 @@ export abstract class BaseAgent extends Tool {
     return { ...(this.config || {}), ...config };
   }
 
-  abstract createAgent(store?: BaseStore, model?: BaseChatModel): Promise<any>;
+  abstract createAgent(
+    store?: BaseStore,
+    model?: BaseChatModel,
+    messageEvent?: AgentMessageEvent,
+    chatOptions?: ChatOptions,
+    signal?: AbortSignal,
+  ): Promise<any>;
 
   // abstract invoke(input: z.infer<typeof this.schema> | string): Promise<any>;
 }

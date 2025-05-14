@@ -53,15 +53,15 @@ export default function Settings() {
                   </Link>
                 ),
               },
-              {
-                key: 'defaultWebSearchEngine',
+              // {
+              //   key: 'defaultWebSearchEngine',
 
-                label: (
-                  <Link to="/settings/defaultWebSearchEngine">
-                    {t('settings.defaultWebSearchEngine')}
-                  </Link>
-                ),
-              },
+              //   label: (
+              //     <Link to="/settings/defaultWebSearchEngine">
+              //       {t('settings.defaultWebSearchEngine')}
+              //     </Link>
+              //   ),
+              // },
               {
                 key: 'localModelManager',
 
@@ -88,10 +88,10 @@ export default function Settings() {
           <Routes>
             <Route path="general" element={<GeneralSettings />} />
             <Route path="defaultModel" element={<DefaultModelSettings />} />
-            <Route
+            {/* <Route
               path="defaultWebSearchEngine"
               element={<DefaultWenSearchEnginSettings />}
-            />
+            /> */}
             <Route path="about" element={<AboutPage />} />
             <Route path="localModelManager" element={<LocalModelManager />} />
           </Routes>

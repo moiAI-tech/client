@@ -1,7 +1,7 @@
 {
-  "name": "aime-box",
-  "description": "Aime Box is a tool agent box for producer.",
-  "version": "0.1.5",
+  "name": "moi",
+  "description": "moi is a tool agent box for producer.",
+  "version": "0.1.6",
   "private": true,
   "keywords": [
     "agent",
@@ -13,7 +13,7 @@
     "url": "https://github.com/AimeBox/aime-box/issues"
   },
   "license": "Apache-2.0",
-  "author": "noah <781172480@qq.com>",
+  "author": "moi <781172480@qq.com>",
   "main": "./.erb/dll/main.bundle.dev.js",
   "scripts": {
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
@@ -115,7 +115,7 @@
     "clsx": "^2.1.1",
     "compressing": "^1.10.1",
     "csv-parse": "^5.6.0",
-    "docx": "^9.3.0",
+    "docx": "^9.5.0",
     "duck-duck-scrape": "^2.2.7",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
@@ -151,13 +151,13 @@
     "react-router-dom": "^6.16.0",
     "sharp": "^0.33.5",
     "sherpa-onnx-node": "^1.10.46",
-    "speaker": "^0.5.5",
     "sqlite3": "^5.1.7",
     "tailwind-merge": "^3.0.1",
     "tree-node-cli": "^1.6.0",
     "typeorm": "^0.3.20",
     "unbzip2-stream": "^1.4.3",
     "vm2": "^3.9.19",
+    "word-extractor": "^1.0.4",
     "yahoo-finance": "^0.3.8",
     "zhipuai-sdk-nodejs-v4": "^0.1.12",
     "zod-to-json-schema": "^3.24.3"
@@ -184,6 +184,7 @@
     "@types/react-dom": "^18.2.7",
     "@types/react-test-renderer": "^18.0.1",
     "@types/webpack-bundle-analyzer": "^4.6.0",
+    "@types/word-extractor": "^1.0.6",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "@typescript-eslint/parser": "^6.7.0",
     "antd": "^5.24.0",
@@ -220,6 +221,7 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "lexical": "^0.24.0",
+    "marked": "^15.0.11",
     "mini-css-extract-plugin": "^2.7.6",
     "postcss": "^8.5.1",
     "postcss-loader": "^8.1.1",
@@ -242,6 +244,7 @@
     "remark-breaks": "^4.0.0",
     "remark-custom-blocks": "^2.6.1",
     "remark-math": "^6.0.0",
+    "remark-remove": "^1.0.0",
     "rimraf": "^5.0.1",
     "sass": "^1.67.0",
     "sass-loader": "^13.3.2",
@@ -262,8 +265,8 @@
     "webpack-merge": "^5.9.0"
   },
   "build": {
-    "productName": "AimeBox",
-    "appId": "com.noah.aime-box",
+    "productName": "moi",
+    "appId": "com.moi.app",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [

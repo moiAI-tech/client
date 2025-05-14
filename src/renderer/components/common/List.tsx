@@ -4,11 +4,13 @@ import { FaEdit, FaPlus, FaSearch, FaTrashAlt } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { ScrollArea } from '@/renderer/components/ui/scroll-area';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { t } from 'i18next';
 
 export interface ListProps {
   width?: number | null;
   height?: number | string | null;
   showSearch?: boolean;
+  showAddButton?: boolean;
   shadow?: boolean;
   onAdd?: () => void | null;
   onSearch?: (text: string) => void;
@@ -25,9 +27,11 @@ export interface ListProps {
 const List = forwardRef((props: ListProps) => {
   const {
     showSearch = true,
+    showAddButton = true,
     width = 250,
     height = '100%',
     onAdd = () => {},
+    addButton,
     shadow = true,
     dataLength = 0,
     hasMore = false,
@@ -40,7 +44,7 @@ const List = forwardRef((props: ListProps) => {
   const scrollAreaRef = useRef();
 
   const onSearch = (text: string) => {
-    if (props.onSearch) props.onSearch(text);
+    props.onSearch?.(text);
   };
 
   const next = () => {
@@ -56,19 +60,19 @@ const List = forwardRef((props: ListProps) => {
         className={`flex flex-col my-auto max-h-[${height}] h-[${height}]`}
         style={{ height: height }}
       >
-        {(showSearch || props.addButton) && (
+        {(showSearch || addButton) && (
           <li className="flex justify-center p-2 mt-3">
             <div className="flex flex-row gap-2 w-full">
               {showSearch && (
                 <Input
                   className="flex-1"
-                  placeholder="Search"
+                  placeholder={t('search')}
+                  variant="filled"
                   prefix={<FaSearch />}
                   onChange={(e) => onSearch(e.target.value)}
                 />
               )}
-
-              {props.addButton ?? (
+              {showAddButton && (
                 <Button icon={<FaPlus />} onClick={onAdd}></Button>
               )}
             </div>
@@ -109,7 +113,7 @@ const List = forwardRef((props: ListProps) => {
                 <Skeleton.Button active block shape="round" />
               </div>
             }
-            endMessage={<Divider plain>no more 🤐</Divider>}
+            // endMessage={<Divider plain>no more 🤐</Divider>}
             scrollableTarget="scrollableDiv"
           >
             <div>{props.children}</div>

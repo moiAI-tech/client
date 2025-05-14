@@ -84,6 +84,8 @@ import { TavilySearchTool } from './TavilySearch';
 import { UnixTimestampConvert } from './UnixTimestamp';
 import { BrowserUseTool } from './BrowserUse';
 import { Vision } from './Vision';
+import { DocxCommentTool, ReadDocxTool } from './OfficeTool';
+import { ToolMessage } from '@langchain/core/messages';
 
 export interface ToolInfo extends Tools {
   id: string;
@@ -205,10 +207,6 @@ export class ToolsManager {
       );
     }
     return list;
-  }
-
-  public getTools(): BaseTool[] {
-    return this.tools.map((x) => x.tool);
   }
 
   public queryTools = (text: string): Tool[] => {
@@ -601,6 +599,8 @@ export class ToolsManager {
     await this.registerTool(WebSearchTool);
     await this.registerTool(KnowledgeBaseQuery);
     await this.registerTool(TavilySearchTool);
+    await this.registerTool(ReadDocxTool);
+    await this.registerTool(DocxCommentTool);
   };
 
   public update = async (toolName: string, arg: any) => {
@@ -656,7 +656,7 @@ export class ToolsManager {
     toolName: string,
     arg: any,
     outputFormat: 'default' | 'markdown' = 'default',
-  ) => {
+  ): Promise<ToolMessage | string> => {
     const tool = await this.toolRepository.findOne({
       where: { name: toolName },
     });
@@ -982,6 +982,11 @@ export class ToolsManager {
       } else if (type == 'sse') {
         transport = new SSEClientTransport(
           createSmitheryUrl(`${command}`, config),
+          {
+            requestInit: {
+              keepalive: false,
+            },
+          },
         );
       } else if (type == 'ws') {
         transport = new WebSocketClientTransport(
@@ -993,6 +998,7 @@ export class ToolsManager {
       //     (x) => x.getServerVersion().name != mcpName,
       //   );
       // };
+
       await client.connect(transport);
     }
 

@@ -114,36 +114,27 @@ li b {
 }
 
 
-.custom-scrollbar {
-  overflow-y: scroll;
-  /* 垂直滚动条 */
-  scrollbar-color: #7a7a7a #e0e0e0;
-  /* 滚动条的颜色 */
-  scrollbar-width: thin;
-  /* 滚动条的宽度 */
-  /* height: 200px; */
-  /* 设置一个高度以启用滚动 */
+
+
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-
-}
-
-.custom-scrollbar::-webkit-scrollbar:hover {
-  width: 6px;
+/* 滚动条轨道 */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
 
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #e0e0e000;
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #7a7a7a;
-  border-radius: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #7a7a7a;
+/* 滑块悬停时 */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
