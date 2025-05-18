@@ -167,7 +167,7 @@ export default function Connections() {
         });
       } else if (changedFields[0].value === 'azure_openai') {
         form.setFieldsValue({
-          api_base: 'https://api.azure.com/v1',
+          api_base: 'https://<instance-name>.cognitiveservices.azure.com',
           api_key: 'NULL',
           extend_params: {
             apiVersion: '2024-10-21',
