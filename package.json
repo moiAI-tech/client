@@ -1,7 +1,7 @@
 {
   "name": "moi",
   "description": "moi is a tool agent box for producer.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "keywords": [
     "agent",
@@ -84,6 +84,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.36.3",
     "@asteasolutions/zod-to-openapi": "^7.3.0",
+    "@azure/openai": "^2.0.0",
     "@electron/notarize": "^2.3.2",
     "@huggingface/hub": "^1.0.1",
     "@huggingface/transformers": "^3.3.3",

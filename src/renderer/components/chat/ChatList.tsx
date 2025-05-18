@@ -125,7 +125,7 @@ const ChatList = React.forwardRef((props: ChatListProps, ref) => {
   const renderChatIcon = (mode: string) => {
     if (mode === 'file') return <FaFile />;
     else if (mode === 'planner') return <FaRegRectangleList />;
-    else return <FaRegMessage />;
+    else return <FaRegMessage size={14} />;
   };
 
   return (

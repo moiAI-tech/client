@@ -250,12 +250,20 @@ export class DraftAgent extends BaseAgent {
         path.join(getAssetsPath(), 'prompts', `draft-detail-${language}.md`),
         'utf-8',
       );
+      const start_prompt = fs.readFileSync(
+        path.join(getAssetsPath(), 'prompts', `draft-start-${language}.md`),
+        'utf-8',
+      );
       const end_prompt = fs.readFileSync(
         path.join(getAssetsPath(), 'prompts', `draft-end-${language}.md`),
         'utf-8',
       );
       const exmaple_prompt = fs.readFileSync(
-        path.join(getAssetsPath(), 'prompts', `draft-exmaple-${language}.md`),
+        path.join(
+          getAssetsPath(),
+          'prompts',
+          `draft-detail-example-${language}.md`,
+        ),
         'utf-8',
       );
 
@@ -294,6 +302,7 @@ export class DraftAgent extends BaseAgent {
       docxWriteData.push({ type: 'title', content: title });
       let history = '';
       let c_index = 1;
+      const last_message = messages[messages.length - 1];
       for (const index of indexs) {
         const schema_content = schemas
           .filter(
@@ -325,9 +334,9 @@ export class DraftAgent extends BaseAgent {
             `[已生成的历史大纲 START]\n${history}\n[已生成的历史大纲 END]`,
           ),
           new HumanMessage(
-            `文件标题:${title}\n当前大纲:\n${schema_content}\n\n---\n根据以上大纲,开始生成明细,未知内容请用中括号"[]"包裹等我填写\n当前生成进度: ${index} / ${indexs.length}`,
+            `文件标题:${title}\n当前大纲:\n${schema_content}\n\n---\n根据以上大纲,开始生成明细,未知内容请用中括号"[]"包裹等我填写\n当前日期:${dayjs().format('YYYY-MM-DD HH:mm')}\n当前生成进度: ${index} / ${indexs.length}`,
           ),
-          messages[messages.length - 1],
+          last_message,
         ];
         c_index++;
         //const prompt = await promptTemplate.format({ title, schema_content });
@@ -359,7 +368,7 @@ export class DraftAgent extends BaseAgent {
               input_messages.push(tool_msg);
             }
           }
-          response = await _model.invoke(input_messages, {
+          response = await that.model.invoke(input_messages, {
             tags: ['ignore'],
             signal,
           });
@@ -413,6 +422,12 @@ export class DraftAgent extends BaseAgent {
           headingLevel: 1,
           author: 'MOI AI',
         });
+        if (index == 1 && start_prompt) {
+          docxWriteData.push({
+            type: 'paragraph',
+            content: start_prompt,
+          });
+        }
         const contentRegex = /<content>([\s\S]*?)<\/content>/g;
 
         const content: string = contentRegex
@@ -446,7 +461,7 @@ export class DraftAgent extends BaseAgent {
           })
           .join('\n');
 
-        const __content = `${extraHeader}## ${schema_title}\n${_c}${comment ? `\n\n---\n*${comment}*` : ''}${extraFoot}`;
+        const __content = `${index == 1 && start_prompt ? `${start_prompt}\n` : ''}${extraHeader}## ${schema_title}\n${_c}${comment ? `\n\n---\n*${comment}*` : ''}${extraFoot}`;
 
         msg.content += `${__content}\n\n`;
         await messageEvent?.updated?.([msg]);

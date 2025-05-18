@@ -160,7 +160,12 @@
     "all": "全部",
     "prompt": "提示词",
     "model": "模型",
-    "mode": "模式"
+    "mode": "模式",
+    "success": "成功",
+    "pending": "处理中",
+    "fail": "失败",
+    "enable": "启用",
+    "disable": "禁用"
   },
   "agents": {
     "name": "名称",
@@ -184,7 +189,7 @@
     "chat_description": "您的全方位助手和伙伴，能快速响应，提供帮助",
     "providers": "模型",
     "prompts": "提示词管理",
-    "knowledgebase": "知识库管理",
+    "knowledgebase": "知识库",
     "tools": "工具管理",
     "agent": "AI助手",
     "home": "主页",
@@ -206,9 +211,11 @@
   "files": {
     "createdAt": "创建时间",
     "name": "文件名称",
-    "file_management": "文件管理"
+    "file_management": "文件管理",
+    "file_management_description": "存储提交和生成的文件"
   },
   "community": {
-    "community": "社区"
+    "community": "社区",
+    "community_description": "加入社区分享你的创意"
   }
 }

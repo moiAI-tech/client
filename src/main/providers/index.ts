@@ -25,6 +25,8 @@ import { ChatDeepSeek } from '@langchain/deepseek';
 import { getProviderModel } from '../utils/providerUtil';
 import { Transformers } from '../utils/transformers';
 import { notificationManager } from '../app/NotificationManager';
+import { AzureOpenAI } from '@langchain/openai';
+import { AzureKeyCredential } from '@azure/openai';
 
 export class ProvidersManager {
   repository: Repository<Providers>;
@@ -272,6 +274,41 @@ export class ProvidersManager {
             };
           })
           .sort((a, b) => a.name.localeCompare(b.name));
+      } else if (connection.type === ProviderType.AZURE_OPENAI) {
+        //const apiKey = new AzureKeyCredential(connection.api_key);
+        const endpoint = connection.api_base;
+        const apiVersion = connection.extend_params?.apiVersion || '2024-10-21';
+        // const deployment =
+        //   connection.extend_params?.deployment || 'gpt-35-turbo';
+        const options = {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json',
+            Authorization: `Bearer ${connection.api_key}`,
+          },
+        };
+        const url = `${endpoint}/openai/models?api-version=${apiVersion}`;
+        const res = await fetch(url, options);
+        const models = await res.json();
+        return models.data.map((x) => {
+          return {
+            name: x.id,
+            enable:
+              connection.models?.find((z) => z.name == x.id)?.enable || false,
+          };
+        });
+
+        // const client = new AzureOpenAI({
+        //   apiKey,
+        //   openAIApiKey: apiKey,
+        //   openAIBasePath: endpoint,
+        //   openAIApiVersion: apiVersion,
+        //   azureOpenAIApiVersion: apiVersion,
+        //   azureOpenAIApiDeploymentName: deployment,
+        // });
+        // client.modelKwargs.
+        //llm.lis
       }
     } catch (e) {
       console.log(e);
@@ -336,6 +373,7 @@ export class ProvidersManager {
       provider.api_base = input.api_base;
       provider.api_key = input.api_key;
       provider.models = input.models;
+      provider.extend_params = input.extend_params;
       await this.repository.save(provider);
     } else {
       if (

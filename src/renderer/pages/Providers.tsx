@@ -52,6 +52,8 @@ export default function Connections() {
   const [formModels] = Form.useForm();
   const formModelsValue = Form.useWatch('models', formModels);
 
+  const formTypeValue = Form.useWatch('type', form);
+
   const getData = async () => {
     try {
       setLoading(true);
@@ -70,6 +72,7 @@ export default function Connections() {
     try {
       const values = (await form.validateFields()) as Providers;
       if (currentData) values.id = currentData.id;
+
       await window.electron.providers.createOrUpdate(values);
       await getData();
       setOpen(false);
@@ -78,7 +81,6 @@ export default function Connections() {
         content: 'success',
       });
     } catch (errorInfo) {
-      debugger;
       messageApi.open({
         type: 'error',
         content: errorInfo.message,
@@ -92,8 +94,10 @@ export default function Connections() {
   };
   const onEdit = async (data: Providers) => {
     setCurrentData(data);
+
     form.resetFields();
     form.setFieldsValue(data);
+
     setOpen(true);
   };
   const onDelete = async (data: Providers) => {
@@ -161,6 +165,14 @@ export default function Connections() {
           api_base: 'https://api.together.xyz/v1',
           api_key: 'NULL',
         });
+      } else if (changedFields[0].value === 'azure_openai') {
+        form.setFieldsValue({
+          api_base: 'https://api.azure.com/v1',
+          api_key: 'NULL',
+          extend_params: {
+            apiVersion: '2024-10-21',
+          },
+        });
       }
     }
   };
@@ -211,12 +223,15 @@ export default function Connections() {
             <div className="px-3 mx-auto w-full md:px-0">
               <div className="mb-6">
                 <div className="flex justify-between items-center">
-                  <div className="flex flex-col gap-2 self-center text-2xl font-semibold">
-                    {t('providers.model_management')}
+                  <div className="flex flex-col gap-2">
+                    <h1 className="text-2xl font-semibold">
+                      {t('providers.model_management')}
+                    </h1>
                     <small className="text-sm text-gray-400">
                       {t('providers.model_management_description')}
                     </small>
                   </div>
+
                   <Button
                     onClick={() => onCreate()}
                     // shape="round"
@@ -380,6 +395,15 @@ export default function Connections() {
               </Form.Item> */}
             </Space.Compact>
           </Form.Item>
+          {(formTypeValue === 'azure_openai' ||
+            form.getFieldValue('type') === 'azure_openai') && (
+            <Form.Item<Providers>
+              label="API Version"
+              name={['extend_params', 'apiVersion']}
+            >
+              <Input />
+            </Form.Item>
+          )}
         </Form>
       </Modal>
       <Modal

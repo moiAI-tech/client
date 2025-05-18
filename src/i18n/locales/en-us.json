@@ -132,7 +132,12 @@
     "all": "All",
     "prompt": "Prompt",
     "model": "Model",
-    "mode": "Mode"
+    "mode": "Mode",
+    "pending": "Pending",
+    "fail": "Fail",
+    "success": "Success",
+    "enable": "Enable",
+    "disable": "Disable"
   },
   "agents": {
     "name": "Name",
@@ -184,9 +189,11 @@
   "files": {
     "createdAt": "Create Time",
     "name": "File Name",
-    "file_management": "File Management"
+    "file_management": "File Management",
+    "file_management_description": "Stores committed and generated files"
   },
   "community": {
-    "community": "Community"
+    "community": "Community",
+    "community_description": "Join the community and share your ideas"
   }
 }

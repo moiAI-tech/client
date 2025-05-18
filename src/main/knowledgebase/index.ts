@@ -731,12 +731,22 @@ export class KnowledgeBaseManager {
   public get = async (input: {
     knowledgeBaseId: string;
     filter: string;
+    where: Record<string, any>;
     skip: number;
     pageSize: number;
     sort: string | undefined;
   }) => {
-    const where = { knowledgeBaseId: input.knowledgeBaseId } as any;
+    let where = { knowledgeBaseId: input.knowledgeBaseId } as any;
     if (input.filter) where['name'] = Like(`%${input.filter.trim()}%`);
+    if (input.where) {
+      if (input.where.state) {
+        const state = In(input.where.state);
+        where = { ...where, state };
+      }
+      if (input.where.isEnable && input.where.isEnable.length > 0) {
+        where = { ...where, isEnable: In(input.where.isEnable) };
+      }
+    }
     const res = await dbManager.page(
       'knowledgebase_item',
       where,

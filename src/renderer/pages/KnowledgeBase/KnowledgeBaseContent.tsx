@@ -8,6 +8,7 @@ import {
   Space,
   Switch,
   Table,
+  TableProps,
   Tag,
   Upload,
   UploadFile,
@@ -47,6 +48,9 @@ export interface KnowledgeBaseContentProps {
   onSelect?: (kbItems: any[], knowledgeBaseId: string) => void;
 }
 
+type OnChange = NonNullable<TableProps<KnowledgeBaseItem>['onChange']>;
+type Filters = Parameters<OnChange>[1];
+
 export default function KnowledgeBaseContent(props: KnowledgeBaseContentProps) {
   const {
     onSelect = (id, knowledgeBaseId) => {},
@@ -65,6 +69,7 @@ export default function KnowledgeBaseContent(props: KnowledgeBaseContentProps) {
   const [knowledgeBaseSearchList, setKnowledgeBaseSearchList] = useState<
     KnowledgeBaseDocument[]
   >([]);
+  const [filteredInfo, setFilteredInfo] = useState<Filters>({});
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 20,
@@ -255,8 +260,14 @@ export default function KnowledgeBaseContent(props: KnowledgeBaseContentProps) {
       title: t('knowledge.enable'),
       dataIndex: 'isEnable',
       key: 'isEnable',
-      width: '80px',
+      width: '100px',
       align: 'center',
+      filters: [
+        { text: t('common.enable'), value: true },
+        { text: t('common.disable'), value: false },
+      ],
+      filterMultiple: false,
+      filteredValue: filteredInfo.isEnable || null,
       render: (text, record, index) => {
         return (
           <Switch
@@ -274,6 +285,12 @@ export default function KnowledgeBaseContent(props: KnowledgeBaseContentProps) {
       key: 'state',
       width: '80px',
       align: 'center',
+      filters: [
+        { text: t('common.pending'), value: 'pending' },
+        { text: t('common.fail'), value: 'fail' },
+        { text: t('common.success'), value: 'success' },
+      ],
+      filteredValue: filteredInfo.state || null,
       render: (text, record, index) => {
         if (record.state == 'pending') {
           return <FaSpinner className="w-full animate-spin"></FaSpinner>;
@@ -316,12 +333,14 @@ export default function KnowledgeBaseContent(props: KnowledgeBaseContentProps) {
     modalRef.current.openModal(false);
   };
   const onChange = async (pagination, filter, sorter) => {
+    setFilteredInfo(filter);
     if (!pagination.current) {
       pagination.current = 1;
     }
     const res = window.electron.kb.get({
       knowledgeBaseId: knowledgeBaseId,
       filter: searchText,
+      where: filter,
       skip: (pagination.current - 1) * pagination.pageSize,
       pageSize: pagination.pageSize,
       sort: 'timestamp desc',
@@ -334,6 +353,7 @@ export default function KnowledgeBaseContent(props: KnowledgeBaseContentProps) {
     const res = window.electron.kb.get({
       knowledgeBaseId: knowledgeBaseId,
       filter: searchText,
+      where: filteredInfo,
       skip: 0,
       pageSize: 20,
       sort: 'timestamp desc',
