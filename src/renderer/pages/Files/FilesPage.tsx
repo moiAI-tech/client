@@ -171,8 +171,11 @@ export default function FilesPage() {
           <div className="px-3 mx-auto w-full md:px-0">
             <div className="mb-6">
               <div className="flex justify-between items-center">
-                <div className="flex flex-col gap-2 self-center text-2xl font-semibold">
-                  {t('files.file_management')}
+                <div className="flex flex-col gap-2 self-center text-2xl ">
+                  <div className="font-semibold">
+                    {t('files.file_management')}
+                  </div>
+
                   <small className="text-sm text-gray-400">
                     {t('files.file_management_description')}
                   </small>

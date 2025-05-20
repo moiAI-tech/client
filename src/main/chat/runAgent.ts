@@ -43,13 +43,11 @@ export const runAgent = async (
       const files: any[] = x.content.filter((x) => x.type == 'file');
       if (x.content.find((x) => x.type == 'text')) {
         (x.content.find((x) => x.type == 'text') as any).text +=
-          `\n${files.map((z) => `<file>[${z.name}](${z.path})</file>`).join('\n')}`;
+          `\n${files.map((z) => `<file>${z.path}</file>`).join('\n')}`;
       } else {
         x.content.push({
           type: 'text',
-          text: files
-            .map((z) => `<file>[${z.name}](${z.path})</file>`)
-            .join('\n'),
+          text: files.map((z) => `<file>${z.path}</file>`).join('\n'),
         });
       }
       x.content = x.content.filter((x) => x.type != 'file');

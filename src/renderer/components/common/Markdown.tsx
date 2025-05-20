@@ -59,28 +59,17 @@ export function Markdown(props: MarkdownProps) {
 
     return { context, files };
   }
-  function parseMarkdownFileLink(md: string): ChatInputAttachment | undefined {
-    const match = md.match(/\[([^\]]+?)\]\((.+?)\)$/);
-    const tokens = marked.lexer(md);
-    if (tokens.length == 1) {
-      const linkToken = tokens
-        .at(0)
-        ?.tokens.find((token) => token.type === 'link');
-      if (linkToken) {
-        console.log(linkToken);
-        const name = linkToken.text;
-        const path = linkToken.href;
-        const ext = `.${name.split('.').pop()}`;
-        return {
-          name,
-          path,
-          type: 'file',
-          ext: ext,
-        };
-      }
-    }
-
-    return undefined;
+  function parseMarkdownFileLink(
+    filePath: string,
+  ): ChatInputAttachment | undefined {
+    const fileName = filePath.split(/[\\/]/).pop();
+    const ext = `.${fileName.split('.').pop()}`;
+    return {
+      name: fileName,
+      path: filePath,
+      type: 'file',
+      ext: ext,
+    };
   }
   useEffect(() => {
     const { context, files } = splitContextAndFiles(props?.value);

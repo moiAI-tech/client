@@ -13,8 +13,10 @@ function Community(props: Props): React.ReactElement {
     <Content>
       <div className="mb-6">
         <div className="flex justify-between items-center">
-          <div className="flex flex-col gap-2 self-center text-2xl font-semibold p-4">
-            {t('community.community')}
+          <div className="flex flex-col gap-2 self-center  p-4">
+            <h1 className="font-semibold text-2xl">
+              {t('community.community')}
+            </h1>
             <small className="text-sm text-gray-400">
               {t('community.community_description')}
             </small>

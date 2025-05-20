@@ -126,70 +126,74 @@ export class DocxCommentTool extends BaseTool {
     runManager,
     config,
   ): Promise<any> {
-    const json_res: { content: string; save_path: string } = await new Promise(
-      (resolve, reject) => {
-        const exe = path.join(getAssetsPath(), 'office-cli', 'OfficeCli.exe');
-        const isExsit = fs.existsSync(exe);
-        if (!isExsit) {
-          reject(new Error('OffceCli.exe not found'));
-        }
-        const comments = [];
-        input.comments.forEach((x) => {
-          const data = {
-            index: x.index,
-            comment: x.comment,
-            text: x.text,
-            author: 'MOI AI',
-          };
-          comments.push('-c');
-          comments.push(`${JSON.stringify(data)}`);
-        });
-
-        let save_path = this.save_path;
-        const stat = fs.statSync(save_path, { throwIfNoEntry: false });
-        if (fs.existsSync(save_path) && stat.isDirectory()) {
-          save_path = path.join(
-            save_path,
-            `${dayjs().format('YYYYMMDDHHmmss')}.docx`,
-          );
-        }
-
-        const process = spawn(exe, [
-          '-f',
-          input.file,
-          '-w',
-          save_path,
-          ...comments,
-        ]);
-        let output = '';
-        let error = '';
-        process.stdout.on('data', (data) => {
-          const out = iconv.decode(data, 'cp936');
-          output += out;
-        });
-
-        process.stderr.on('data', (data) => {
-          const out = iconv.decode(data, 'cp936');
-          error += out;
-          // process.kill();
-        });
-
-        process.on('close', (code) => {
-          if (output && code == 0) {
-            const file = new Files();
-            file.name = path.basename(save_path);
-            file.path = save_path;
-            file.type = 'file';
-            file.createdAt = new Date();
-            file.size = fs.statSync(save_path).size;
-            this.filesRepository.save(file);
-            resolve({ content: output, save_path: save_path });
-          } else {
-            reject(error);
+    try {
+      const json_res: { content: string; save_path: string } =
+        await new Promise((resolve, reject) => {
+          const exe = path.join(getAssetsPath(), 'office-cli', 'OfficeCli.exe');
+          const isExsit = fs.existsSync(exe);
+          if (!isExsit) {
+            reject(new Error('OffceCli.exe not found'));
           }
+          const comments = [];
+          input.comments.forEach((x) => {
+            const data = {
+              index: x.index,
+              comment: x.comment,
+              text: x.text,
+              author: 'MOI AI',
+            };
+            comments.push('-c');
+            comments.push(`${JSON.stringify(data)}`);
+            console.log(JSON.stringify(data));
+          });
+
+          let save_path = this.save_path;
+          const stat = fs.statSync(save_path, { throwIfNoEntry: false });
+          if (fs.existsSync(save_path) && stat.isDirectory()) {
+            save_path = path.join(
+              save_path,
+              `${dayjs().format('YYYYMMDDHHmmss')}.docx`,
+            );
+          }
+
+          const process = spawn(exe, [
+            '-f',
+            input.file,
+            '-w',
+            save_path,
+            ...comments,
+          ]);
+          let output = '';
+          let error = '';
+          process.stdout.on('data', (data) => {
+            const out = iconv.decode(data, 'cp936');
+            output += out;
+          });
+
+          process.stderr.on('data', (data) => {
+            const out = iconv.decode(data, 'cp936');
+            error += out;
+            // process.kill();
+          });
+
+          process.on('close', (code) => {
+            if (output && code == 0) {
+              const file = new Files();
+              file.name = path.basename(save_path);
+              file.path = save_path;
+              file.type = 'file';
+              file.createdAt = new Date();
+              file.size = fs.statSync(save_path).size;
+              this.filesRepository.save(file);
+              resolve({ content: output, save_path: save_path });
+            } else {
+              reject(error);
+            }
+          });
         });
-      },
-    );
-    return json_res.content;
+      return json_res.content;
+    } catch (err) {
+      return err;
+    }
   }
 }

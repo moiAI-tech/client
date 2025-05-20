@@ -505,7 +505,7 @@ export class DraftAgent extends BaseAgent {
       //file.chatId = chatId;
       await that.filesRepository.save(file);
 
-      msg.content += `\n\n---\n<file>[${fileName}](${filePath.replaceAll('\\', '/')})</file>`;
+      msg.content += `\n\n---\n<file>${filePath.replaceAll('\\', '/')}</file>`;
       await messageEvent?.updated?.([msg]);
 
       // for (let index = 0; index < schemas.length; index++) {

@@ -493,7 +493,7 @@ const ChatMessageBox = React.forwardRef(
                               ),
                               children: (
                                 <>
-                                  {/* <JSONTree
+                                  <JSONTree
                                     data={toolCall.args}
                                     hideRoot
                                     valueRenderer={(raw) => (
@@ -501,7 +501,7 @@ const ChatMessageBox = React.forwardRef(
                                         {raw}
                                       </span>
                                     )}
-                                  /> */}
+                                  />
 
                                   {toolMessageContent &&
                                     renderToolContent(toolMessage)}
