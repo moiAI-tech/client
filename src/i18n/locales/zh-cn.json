@@ -217,5 +217,21 @@
   "community": {
     "community": "社区",
     "community_description": "加入社区分享你的创意"
+  },
+  "hireMore": {
+    "clickLinkToSendEmail": "点击发送邮件",
+    "onlineConsultation": "在线咨询",
+    "contactInformation": "联系方式",
+    "welcomeMessage": "如果您有特定的法律需求，或希望进一步了解AI助手的定制化功能，欢迎随时联系我们！我们的团队将为您提供个性化解决方案，帮助您更高效地处理法律事务。",
+    "supportMessage": "我们期待为您提供更专业的支持！",
+    "weChat": "微信",
+    "developmentMessage": "这个模块还在开发中，如果您有如下需求:",
+    "knowledgeSharing": "知识共享：获取最新法律解读、裁判趋势和合同模板",
+    "professionalExchange": "专业交流：与律师、法务同行探讨实务问题",
+    "helpAnswer": "互助答疑：提出具体法律问题，获得社区智能AI+专业人士的双重解答",
+    "dynamicReminder": "动态提醒：实时了解法律法规更新和典型判例 请与我们联系！"
+  },
+  "draft": {
+    "startGenerateDetail": "需要开始生成明细的话可以跟我说“开始生成”,如果对大纲不满意的话可以跟我说需要调整的地方"
   }
 }

@@ -155,6 +155,17 @@ export class DocxCommentTool extends BaseTool {
               `${dayjs().format('YYYYMMDDHHmmss')}.docx`,
             );
           }
+          const fileStat = fs.statSync(input.file, { throwIfNoEntry: false });
+          if (!fileStat.isFile()) {
+            reject(new Error('file not found'));
+          }
+
+          const isReadOnly = (fileStat.mode & 0o200) === 0;
+          if (isReadOnly) {
+            const newMode = fileStat.mode | 0o200;
+
+            fs.chmodSync(input.file, newMode);
+          }
 
           const process = spawn(exe, [
             '-f',

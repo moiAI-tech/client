@@ -34,6 +34,7 @@ import {
   BaseStore,
   Command,
   CompiledStateGraph,
+  END,
   InMemoryStore,
   StateGraph,
   StateType,
@@ -167,11 +168,11 @@ export class DraftAgent extends BaseAgent {
               name: 'generate_schemas',
               args: {
                 schemas: [
-                  '1. 标题',
-                  '1.1 标题',
-                  '1.2 标题',
-                  '1.2.1 标题',
-                  '2. 标题',
+                  '1. Title',
+                  '1.1 Title',
+                  '1.2 Title',
+                  '1.2.1 Title',
+                  '2. Title',
                 ],
                 title: 'xx与xx的购车合同',
               },
@@ -183,7 +184,11 @@ export class DraftAgent extends BaseAgent {
       ]);
       const llmWithStructured = that.model.withStructuredOutput(
         z.object({
-          title: z.string().describe('文件标题,不要出现路径不支持的字符'),
+          title: z
+            .string()
+            .describe(
+              'FileName Title, Do not use unsupported characters in the path.',
+            ),
           schemas: z
             .array(z.string())
             .describe(
@@ -218,7 +223,7 @@ export class DraftAgent extends BaseAgent {
       msg.content = `# ${response.title}\n${response.schemas
         .map((x) => `### ${x}`)
         .join('\n')}`;
-      msg.content += `\n\n---\n> **需要开始生成明细的话可以跟我说“开始生成”,如果对大纲不满意的话可以跟我说需要调整的地方**`;
+      msg.content += `\n\n---\n> **${t('draft.startGenerateDetail')}**`;
       await messageEvent?.finished?.([msg]);
 
       const _schemas = response.schemas.map((x) => {
@@ -331,10 +336,10 @@ export class DraftAgent extends BaseAgent {
 </comment>`,
           ),
           new HumanMessage(
-            `[已生成的历史大纲 START]\n${history}\n[已生成的历史大纲 END]`,
+            `[HISTORY OUTLINE START]\n${history}\n[HISTORY OUTLINE END]`,
           ),
           new HumanMessage(
-            `文件标题:${title}\n当前大纲:\n${schema_content}\n\n---\n根据以上大纲,开始生成明细,未知内容请用中括号"[]"包裹等我填写\n当前日期:${dayjs().format('YYYY-MM-DD HH:mm')}\n当前生成进度: ${index} / ${indexs.length}`,
+            `TITLE:${title}\nOUTLINE:\n${schema_content}\n\n---\nBased on the above outline, start generating the details. For unknown content, enclose it in square brackets "[]" for me to fill in later.\nCURRENT DATE:${dayjs().format('YYYY-MM-DD HH:mm')}\nCURRENT PROGRESS: ${index} / ${indexs.length}`,
           ),
           last_message,
         ];
@@ -486,7 +491,8 @@ export class DraftAgent extends BaseAgent {
           content: end_prompt,
         });
       }
-      const fileName = `${title}_${dayjs().format('YYYYMMDDHHmmss')}.docx`;
+
+      const fileName = `${dayjs().format('YYYYMMDDHHmmss')}.docx`;
       const filePath = path.join(
         settingsManager.getSettings().defaultFileSavePath,
         fileName,
@@ -552,8 +558,8 @@ export class DraftAgent extends BaseAgent {
       title,
     }: typeof StateAnnotation.State) {
       const language = await settingsManager.getSettings().language;
-      const action = ['__end__', 'generate-schemas'];
-      let prompt = `你将判断用户是否需要生成大纲或者生成内容\n- 如果需要生成大纲，则使用generate-schemas${(schemas && schemas.length > 0) || title ? '\n- 如果需要生成详细内容，则使用generate-detail' : ''}\n- 如果都不是，则使用__end__`;
+      const action = ['end', 'generate-schemas'];
+      const prompt = `You will determine whether the user needs to generate an outline or generate content.\n- If an outline needs to be generated, use\`generate-schemas\`${(schemas && schemas.length > 0) || title ? '\n- If detailed content needs to be generated, use `generate-detail`' : ''}\n- If neither, use \`end\``;
       if ((schemas && schemas.length > 0) || title) {
         // prompt += `### 当前已生成大纲\n\`\`\`\n# ${title}\n${schemas
         //   .map((x) => `## ${x.index} ${x.title}`)
@@ -583,7 +589,7 @@ export class DraftAgent extends BaseAgent {
           // update: {
           //   messages: [...messages],
           // },
-          goto: goto,
+          goto: goto == 'end' ? END : goto,
         });
       } catch (err) {
         console.error(err);
@@ -609,20 +615,20 @@ export class DraftAgent extends BaseAgent {
           // update: {
           //   messages: [...messages],
           // },
-          goto: '__end__',
+          goto: END,
         });
       }
     }
 
     const workflow = new StateGraph(StateAnnotation)
       .addNode('host', hostNode, {
-        ends: ['generate-schemas', 'generate-detail', '__end__'],
+        ends: ['generate-schemas', 'generate-detail', END],
       })
       .addNode('generate-schemas', schemasNode, {
-        ends: ['__end__'],
+        ends: [END],
       })
       .addNode('generate-detail', generateNode, {
-        ends: ['__end__'],
+        ends: [END],
       })
       .addEdge('__start__', 'host');
 

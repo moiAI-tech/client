@@ -3,6 +3,7 @@ import Content from '../components/layout/Content';
 import React, { useState } from 'react';
 import { Button, Modal, Space } from 'antd';
 import qr from '../../../assets/qr.png';
+import { t } from 'i18next';
 
 interface Props {}
 
@@ -12,12 +13,10 @@ function HireMore(props: Props): React.ReactElement {
   return (
     <Content>
       <ScrollArea className="p-8 w-full h-full">
-        <div>
-          如果您有特定的法律需求，或希望进一步了解AI助手的定制化功能，欢迎随时联系我们！我们的团队将为您提供个性化解决方案，帮助您更高效地处理法律事务。
-        </div>
+        <div>{t('hireMore.welcomeMessage')}</div>
         <br></br>
         <p>
-          📩 联系方式：
+          📩 {t('hireMore.contactInformation')}：
           <Button
             type="link"
             onClick={() => {
@@ -28,22 +27,22 @@ function HireMore(props: Props): React.ReactElement {
               });
             }}
           >
-            点击链接发送邮件
+            {t('hireMore.clickLinkToSendEmail')}
           </Button>
         </p>
         <p>
-          💬 在线咨询：
+          💬 {t('hireMore.onlineConsultation')}：
           <Button
             type="link"
             onClick={() => {
               setIsModalOpen(true);
             }}
           >
-            扫码加微信
+            {t('hireMore.weChat')}
           </Button>
         </p>
         <br></br>
-        <p>我们期待为您提供更专业的支持！</p>
+        <p>{t('hireMore.supportMessage')}</p>
       </ScrollArea>
       <Modal
         open={isModalOpen}

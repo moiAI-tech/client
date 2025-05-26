@@ -62,15 +62,15 @@ export default function Settings() {
               //     </Link>
               //   ),
               // },
-              {
-                key: 'localModelManager',
+              // {
+              //   key: 'localModelManager',
 
-                label: (
-                  <Link to="/settings/localModelManager">
-                    {t('settings.localModelManager')}
-                  </Link>
-                ),
-              },
+              //   label: (
+              //     <Link to="/settings/localModelManager">
+              //       {t('settings.localModelManager')}
+              //     </Link>
+              //   ),
+              // },
               {
                 key: 'about',
 
