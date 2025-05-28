@@ -13,6 +13,7 @@ export enum ProviderType {
   SILICONFLOW = 'siliconflow',
   DEEPSEEK = 'deepseek',
   AZURE_OPENAI = 'azure_openai',
+  MOI = 'moi',
 }
 
 @Entity('providers')
@@ -36,7 +37,11 @@ export class Providers {
   @Column('json', { nullable: true })
   models?: any;
 
+  @Column({ default: false })
   static: boolean;
+
+  @Column({ nullable: true })
+  icon?: string;
 
   @Column('json', { nullable: true })
   extend_params?: any;

@@ -259,20 +259,31 @@ export default function Connections() {
                           key={value.id}
                         >
                           <div className="flex overflow-hidden justify-center items-center h-10 rounded-xl min-w-10">
-                            <ProviderIcon
-                              provider={value.type}
-                              size={36}
-                              className="h-full rounded-xl"
-                            />
+                            {value.icon && (
+                              <img
+                                src={value.icon}
+                                alt="icon"
+                                className="h-full rounded-xl"
+                              />
+                            )}
+                            {!value.icon && (
+                              <ProviderIcon
+                                provider={value.type}
+                                size={36}
+                                className="h-full rounded-xl"
+                              />
+                            )}
                           </div>
                           <div className="flex-1 self-center">
                             <span className="font-bold line-clamp-1">
                               {value.name}
                             </span>
 
-                            <span className="overflow-hidden text-xs text-ellipsis line-clamp-1">
-                              {value.api_base}
-                            </span>
+                            {!value.static && (
+                              <span className="overflow-hidden text-xs text-ellipsis line-clamp-1">
+                                {value.api_base}
+                              </span>
+                            )}
                           </div>
                           <div className="flex flex-row self-center space-x-1">
                             <Button
@@ -287,6 +298,7 @@ export default function Connections() {
                               icon={<FaEdit />}
                               shape="round"
                               type="text"
+                              disabled={value.static}
                               onClick={() => onEdit(value)}
                             ></Button>
                             <Popconfirm
@@ -294,9 +306,11 @@ export default function Connections() {
                               onConfirm={() => onDelete(value)}
                               okText="Yes"
                               cancelText="No"
+                              disabled={value.static}
                             >
                               <Button
                                 icon={<FaTrashAlt />}
+                                disabled={value.static}
                                 shape="round"
                                 type="text"
                               ></Button>

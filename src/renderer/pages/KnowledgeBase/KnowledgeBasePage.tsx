@@ -92,7 +92,7 @@ export default function KnowledgeBasePage() {
       required: true,
 
       subLabel: '设置后将无法更改',
-
+      defaultValue: 'BAAI/bge-bge-m3@moi',
       component: <ProviderSelect type="embedding" />,
       ifShow({ values }) {
         return !values.id;
@@ -102,6 +102,7 @@ export default function KnowledgeBasePage() {
       label: 'Reranker',
       field: 'reranker',
       required: false,
+      defaultValue: 'BAAI/bge-reranker-v2-m3@moi',
       component: <ProviderSelect type="reranker" allowClear />,
     },
   ] as FormSchema[];

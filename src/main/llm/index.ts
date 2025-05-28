@@ -29,6 +29,8 @@ export async function getChatModel(
   options: ChatOptions = { streaming: true },
   tools: BaseTool[] = [],
 ): Promise<BaseChatModel> {
+  let llm: BaseChatModel;
+
   const provider = await (
     await providersManager.getProviders()
   ).find((x) => x.name === providerName);
@@ -42,7 +44,6 @@ export async function getChatModel(
     throw new Error('Model not enable');
   }
 
-  let llm: BaseChatModel;
   if (provider?.type === ProviderType.OLLAMA) {
     llm = new ChatOllama({
       baseUrl: provider.api_base, // Default value
@@ -190,6 +191,24 @@ export async function getChatModel(
       },
       //  process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME, // In Node.js defaults to process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME
       //azureOpenAIApiVersion: provider.extend_params.apiVersion, // In Node.js defaults to process.env.AZURE_OPENAI_API_VERSION
+    });
+  } else if (provider?.type === ProviderType.MOI) {
+    const url = new URL(provider.api_base);
+    llm = new AzureChatOpenAI({
+      model: model.name,
+      temperature: options?.temperature,
+      maxTokens: options?.maxTokens,
+      apiKey: provider.api_key,
+      openAIApiVersion: provider.extend_params.apiVersion,
+      // maxRetries: 2,
+      azureOpenAIApiKey: provider.api_key, // In Node.js defaults to process.env.AZURE_OPENAI_API_KEY
+      azureOpenAIApiInstanceName: new URL(provider.api_base).host.split('.')[0], // In Node.js defaults to process.env.AZURE_OPENAI_API_INSTANCE_NAME
+      azureOpenAIApiDeploymentName: model.name,
+      streaming: options?.streaming,
+      topP: options?.top_p,
+      configuration: {
+        httpAgent: settingsManager.getHttpAgent(),
+      },
     });
   }
   if (tools.length > 0) {

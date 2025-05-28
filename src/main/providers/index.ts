@@ -26,7 +26,6 @@ import { getProviderModel } from '../utils/providerUtil';
 import { Transformers } from '../utils/transformers';
 import { notificationManager } from '../app/NotificationManager';
 import { AzureOpenAI } from '@langchain/openai';
-import { AzureKeyCredential } from '@azure/openai';
 
 export class ProvidersManager {
   repository: Repository<Providers>;
@@ -71,6 +70,33 @@ export class ProvidersManager {
       (event) => settingsManager.getSettings()?.defaultLLM,
     );
   }
+
+  public init = async () => {
+    let provider = await this.repository.findOneBy({ id: 'moi' });
+    if (!provider) {
+      provider = new Providers();
+      provider.id = 'moi';
+      provider.name = 'moi';
+      provider.models = [
+        {
+          name: 'gpt-4.1',
+          enable: true,
+        },
+      ];
+    }
+    provider.type = ProviderType.MOI;
+    provider.api_base =
+      'https://liual-m3x1eqyy-eastus2.cognitiveservices.azure.com';
+    provider.api_key =
+      '5TtLUkqGfpYSf5G7QiaIymDetka3dpTmoOWc39xqYSME5JUhgfYgJQQJ99AKACHYHv6XJ3w3AAAAACOG3MlK';
+    provider.static = true;
+    provider.icon = 'file:///assets/icon.png';
+    provider.extend_params = {
+      apiVersion: '2024-10-21',
+      siliconflowApiKey: 'sk-lmofxtqhjqvcqbgowugfpxcbtcghcogiwvvnsiznyjjgqumz',
+    };
+    await this.repository.save(provider);
+  };
 
   public getProviderType = () => {
     const list = [];
@@ -309,6 +335,27 @@ export class ProvidersManager {
         // });
         // client.modelKwargs.
         //llm.lis
+      } else if (connection.type === ProviderType.MOI) {
+        const endpoint = connection.api_base;
+        const apiVersion = connection.extend_params?.apiVersion || '2024-10-21';
+        const options = {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json',
+            Authorization: `Bearer ${connection.api_key}`,
+          },
+        };
+        const url = `${endpoint}/openai/models?api-version=${apiVersion}`;
+        const res = await fetch(url, options);
+        const models = await res.json();
+        return models.data.map((x) => {
+          return {
+            name: x.id,
+            enable:
+              connection.models?.find((z) => z.name == x.id)?.enable || false,
+          };
+        });
       }
     } catch (e) {
       console.log(e);
@@ -335,9 +382,9 @@ export class ProvidersManager {
         const connection = all[i];
         connections.push(connection);
       }
-
       this.connectionsStore = connections;
     }
+
     return this.connectionsStore;
   };
 
@@ -417,6 +464,7 @@ export class ProvidersManager {
         ['embeddings'].filter((x) => x.exists)
         .map((x) => x.id),
     });
+
     for (let index = 0; index < connections.length; index++) {
       const connection = connections[index];
 
@@ -506,6 +554,23 @@ export class ProvidersManager {
             models: [],
           });
         }
+      } else if (connection?.type === ProviderType.MOI) {
+        const options = {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json',
+            Authorization: `Bearer ${connection.extend_params.siliconflowApiKey}`,
+          },
+        };
+        const url = 'https://api.siliconflow.cn/v1/models?sub_type=embedding';
+        const res = await fetch(url, options);
+        const models = await res.json();
+
+        emb_list.push({
+          name: connection.name,
+          models: models.data?.map((x) => x.id) ?? [],
+        });
       }
     }
     return emb_list;
@@ -531,6 +596,23 @@ export class ProvidersManager {
             accept: 'application/json',
             'content-type': 'application/json',
             Authorization: `Bearer ${connection.api_key}`,
+          },
+        };
+        const url = 'https://api.siliconflow.cn/v1/models?sub_type=reranker';
+        const res = await fetch(url, options);
+        const models = await res.json();
+
+        emb_list.push({
+          name: connection.name,
+          models: models.data?.map((x) => x.id)?.sort() ?? [],
+        });
+      } else if (connection?.type === ProviderType.MOI) {
+        const options = {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json',
+            Authorization: `Bearer ${connection.extend_params.siliconflowApiKey}`,
           },
         };
         const url = 'https://api.siliconflow.cn/v1/models?sub_type=reranker';
