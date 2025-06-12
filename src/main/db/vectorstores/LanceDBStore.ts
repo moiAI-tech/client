@@ -164,11 +164,23 @@ export class LanceDBStore extends BaseVectorStore {
     options?: { [x: string]: any },
   ): Promise<void | string[]> {
     const texts = documents.map(({ pageContent }) => pageContent);
-    return this.addVectors(
-      await this.embeddings.embedDocuments(texts),
-      documents,
-      options,
-    );
+    const chunks = this.chunkArray(texts, 10);
+    const vectors = [];
+    for (const chunk of chunks) {
+      const _vectors = await this.embeddings.embedDocuments(chunk);
+      vectors.push(..._vectors);
+    }
+
+    //const vectors = await this.embeddings.embedDocuments(texts);
+    return this.addVectors(vectors, documents, options);
+  }
+
+  chunkArray<T>(array: T[], chunkSize: number = 10): T[][] {
+    const chunks: T[][] = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+      chunks.push(array.slice(i, i + chunkSize));
+    }
+    return chunks;
   }
 
   async similaritySearchVectorWithScore(

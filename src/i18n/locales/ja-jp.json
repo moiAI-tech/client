@@ -185,7 +185,7 @@
   "sidebar": {
     "settings": "設定",
     "theme": "テーマ",
-    "chat": "日常アシスタント",
+    "chat": "汎用助手",
     "chat_description": "迅速な対応とサポートを提供するオールラウンドなアシスタント",
     "providers": "モデル",
     "prompts": "プロンプト管理",

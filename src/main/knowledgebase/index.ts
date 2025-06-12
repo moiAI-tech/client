@@ -353,7 +353,7 @@ export class KnowledgeBaseManager {
     const kb_repository = dbManager.dataSource.getRepository(KnowledgeBase);
     const repository = dbManager.dataSource.getRepository(KnowledgeBaseItem);
     const kb = await kb_repository.findOne({ where: { id: input.kbId } });
-    const vectraStore = await this.getVectorStore(kb);
+
     try {
       const embeddings = await this.getEmbeddings(kb);
       await embeddings.embedQuery('embedding test');

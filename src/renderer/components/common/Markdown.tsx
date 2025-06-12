@@ -78,7 +78,7 @@ export function Markdown(props: MarkdownProps) {
       .map((file) => parseMarkdownFileLink(file))
       .filter((x) => x !== undefined);
     setFiles(f);
-    setRenderedContent(context);
+    // setRenderedContent(context);
 
     unified()
       .use(remarkParse)

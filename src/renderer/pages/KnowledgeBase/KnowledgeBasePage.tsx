@@ -92,7 +92,7 @@ export default function KnowledgeBasePage() {
       required: true,
 
       subLabel: '设置后将无法更改',
-      defaultValue: 'BAAI/bge-bge-m3@moi',
+      defaultValue: 'BAAI/bge-m3@moi',
       component: <ProviderSelect type="embedding" />,
       ifShow({ values }) {
         return !values.id;

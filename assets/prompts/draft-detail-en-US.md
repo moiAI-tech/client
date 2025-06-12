@@ -75,21 +75,18 @@ You are a senior legal document drafter specializing in U.S. contracts. Your tas
 Use this template for clause output:
 
 ```
-<title> -3- </title>
+<title> -3- Title</title>
 <content>
-[3.1] 3.1  
+[3.1] 3.1 subtitle
 content
-    [a] (a)  
-    content
-        [i] (i)
-            content
-        [ii] (ii)
-            content
+[3.1.1](a) subtitle
+content
+[3.1.2](b) subtitle
+content
 </content>
 <comment>
 Reference from [Template Name], Section X.Y (if applicable)  
 </comment>
-
 ```
 
 ### **Available Tools**

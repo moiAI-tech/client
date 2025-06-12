@@ -109,10 +109,13 @@ export async function getReranker(providerModel?: string): Promise<Reranker> {
       await providersManager.getProviders()
     ).find((x) => x.name === providerName);
 
-    if (provider?.type === ProviderType.SILICONFLOW) {
+    if (
+      provider?.type === ProviderType.SILICONFLOW ||
+      provider?.type === ProviderType.MOI
+    ) {
       return new SiliconFlowReranker({
         modelName,
-        apiKey: provider.api_key,
+        apiKey: provider.extend_params.siliconflowApiKey,
       });
     }
   }

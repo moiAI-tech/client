@@ -29,6 +29,7 @@ import { ProviderType, Providers } from '../../entity/Providers';
 import { ChatOptions } from '../../entity/Chat';
 import { Embeddings, EmbeddingsParams } from '@langchain/core/embeddings';
 import { HuggingFaceTransformersEmbeddings } from './HuggingFaceTransformersEmbeddings';
+import { SiliconflowEmbeddings } from './SiliconflowEmbeddings';
 
 export async function getEmbeddingModel(
   providerName: string,
@@ -72,6 +73,13 @@ export async function getEmbeddingModel(
     return emb;
   } else if (provider?.type === ProviderType.TOGETHERAI) {
     const emb = new TogetherAIEmbeddings({ apiKey: provider.api_key });
+    return emb;
+  } else if (provider?.type === ProviderType.MOI) {
+    const emb = new SiliconflowEmbeddings({
+      modelName: model,
+      apiKey: provider.extend_params.siliconflowApiKey,
+      baseURL: 'https://api.siliconflow.cn/v1',
+    });
     return emb;
   }
   throw new Error();
