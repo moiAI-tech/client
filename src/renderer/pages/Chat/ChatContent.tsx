@@ -45,7 +45,6 @@ import ChatOptionsDrawer from './ChatOptionsDrawer';
 import { t } from 'i18next';
 import EmojiPicker, { SkinTones } from 'emoji-picker-react';
 import { GlobalContext } from '@/renderer/context/GlobalContext';
-import { Editor, EditorRef } from '@/renderer/components/common/Editor';
 import { ChatInputAttachment } from '@/types/chat';
 import ChatAttachment from '@/renderer/components/chat/ChatAttachment';
 import domtoimage from 'dom-to-image';
@@ -80,7 +79,6 @@ export default function ChatContent(props: {
   const [attachments, setAttachments] = useState<ChatInputAttachment[]>([]);
   const { agents, tools, knowledgeBase } = useContext(GlobalContext);
   const scrollRef = useRef<ScrollAreaRef | null>(null);
-  const editorRef = useRef<EditorRef>(null);
   const dispatch = useDispatch();
   const [isPackaged, setIsPackaged] = useState(true);
 

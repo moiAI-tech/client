@@ -24,7 +24,6 @@ import {
   FaTrashAlt,
 } from 'react-icons/fa';
 import { FaGear } from 'react-icons/fa6';
-import { Editor, EditorRef } from '@/renderer/components/common/Editor';
 import { useEffect, useRef, useState } from 'react';
 import { t } from 'i18next';
 import DocumentView, {
@@ -59,7 +58,6 @@ export default function ChatFileContent() {
   );
   const documentRef = useRef<DocumentViewRef>(null);
 
-  const editorRef = useRef<EditorRef>(null);
   const onDelete = async (chatMessage: ChatMessage) => {};
   const onChangeCurrentModel = async (currentModel: string) => {};
   const onClearChatMessages = async () => {};
@@ -424,20 +422,20 @@ export default function ChatFileContent() {
 
               <div className="flex overflow-hidden flex-col flex-1 gap-2 p-2 h-full bg-gray-100 rounded-2xl dark:bg-gray-800">
                 <div className="flex flex-col flex-1 h-full">
-                  <ChatQuickInput
+                  {/* <ChatQuickInput
                     onClick={(text) => {
                       editorRef.current?.insertText(text);
                       setChatInputMessage(text);
                     }}
                     className="mb-1"
-                  />
+                  /> */}
                   <ScrollArea className="flex-1 h-full rounded-xl border border-gray-300 border-solid dark:border-gray-700">
-                    <Editor
+                    {/* <Editor
                       ref={editorRef}
                       className={`flex-1 w-full h-full text-sm bg-transparent outline-none resize-none`}
                       value={chatInputMessage}
                       onChange={setChatInputMessage}
-                    />
+                    /> */}
                   </ScrollArea>
                 </div>
               </div>

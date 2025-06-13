@@ -67,7 +67,6 @@ import { BaseTool } from './BaseTool';
 import { KnowledgeBaseQuery } from './KnowledgeBaseQuery';
 import fs from 'fs';
 import { WebSocketClientTransport } from '@modelcontextprotocol/sdk/client/websocket';
-import { createSmitheryUrl, MultiClient } from '@smithery/sdk';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';

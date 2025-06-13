@@ -21,7 +21,7 @@ export interface SiliconflowEmbeddingsParams extends EmbeddingsParams {
   apiKey: string;
   baseURL: string;
 }
-// eslint-disable-next-line import/prefer-default-export
+
 export class SiliconflowEmbeddings
   extends Embeddings
   implements SiliconflowEmbeddingsParams

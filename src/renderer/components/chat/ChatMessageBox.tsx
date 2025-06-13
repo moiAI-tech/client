@@ -56,7 +56,7 @@ import ProviderIcon from '../common/ProviderIcon';
 import { ResponseCard } from '../common/ResponseCard';
 import { ScrollArea } from '../ui/scroll-area';
 import JSONPretty from 'react-json-pretty';
-import { JSONTree } from 'react-json-tree';
+// import { JSONTree } from 'react-json-tree';
 import './ChatMessageBox.css';
 import ChatAttachment from './ChatAttachment';
 import { t } from 'i18next';
@@ -493,7 +493,7 @@ const ChatMessageBox = React.forwardRef(
                               ),
                               children: (
                                 <>
-                                  <JSONTree
+                                  {/* <JSONTree
                                     data={toolCall.args}
                                     hideRoot
                                     valueRenderer={(raw) => (
@@ -501,7 +501,8 @@ const ChatMessageBox = React.forwardRef(
                                         {raw}
                                       </span>
                                     )}
-                                  />
+                                  /> */}
+                                  {JSON.stringify(toolCall.args, null, 2)}
 
                                   {toolMessageContent &&
                                     renderToolContent(toolMessage)}

@@ -8,7 +8,15 @@ import webpackPaths from './webpack.paths';
 import { dependencies as externals } from '../../release/app/package.json';
 
 const configuration: webpack.Configuration = {
-  externals: [...Object.keys(externals || {})],
+  externals: [
+    ...Object.keys(externals || {}),
+    {
+      undici: 'commonjs2 undici',
+    },
+    {
+      'sherpa-onnx-node': 'commonjs2 sherpa-onnx-node',
+    },
+  ],
 
   stats: 'errors-only',
 
@@ -23,11 +31,17 @@ const configuration: webpack.Configuration = {
             // Remove this line to enable type checking in webpack builds
             transpileOnly: true,
             compilerOptions: {
-              module: 'esnext',
+              //module: 'esnext',
+              module: 'nodenext',
+              moduleResolution: 'nodenext',
             },
           },
         },
       },
+      // {
+      //   test: /\.node$/,
+      //   loader: 'node-loader',
+      // },
     ],
   },
 

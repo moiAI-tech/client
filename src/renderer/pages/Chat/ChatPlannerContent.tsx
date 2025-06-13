@@ -24,7 +24,6 @@ import {
   FaTrashAlt,
 } from 'react-icons/fa';
 import { FaGear } from 'react-icons/fa6';
-import { Editor, EditorRef } from '@/renderer/components/common/Editor';
 import { useEffect, useRef, useState } from 'react';
 import { t } from 'i18next';
 import DocumentView from '@/renderer/components/common/DocumentView';
@@ -49,7 +48,6 @@ export default function ChatPlannerContent() {
   const [attachments, setAttachments] = useState<ChatInputAttachment[]>([]);
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const editorRef = useRef<EditorRef>(null);
   const onDelete = async (chatMessage: ChatMessage) => {};
   const onChangeCurrentModel = async (currentModel: string) => {
     await window.electron.db.update('chat', { model: currentModel } as any, {
@@ -74,7 +72,6 @@ export default function ChatPlannerContent() {
       content: chatInputMessage.trim(),
       extend: { attachments: attachments },
     });
-    editorRef.current?.clear();
     setAttachments([]);
   };
   const onCancel = async (chatId: string) => {
@@ -321,7 +318,7 @@ export default function ChatPlannerContent() {
               )}
               <div className="flex overflow-hidden flex-col flex-1 gap-2 p-2 h-full bg-gray-100 rounded-2xl dark:bg-gray-800">
                 <div className="flex flex-col flex-1 h-full">
-                  <ChatQuickInput
+                  {/* <ChatQuickInput
                     onClick={(text) => {
                       editorRef.current?.insertText(text);
                       setChatInputMessage(text);
@@ -335,7 +332,7 @@ export default function ChatPlannerContent() {
                       value={chatInputMessage}
                       onChange={setChatInputMessage}
                     />
-                  </ScrollArea>
+                  </ScrollArea> */}
                 </div>
               </div>
               <div className="flex flex-row justify-between items-center w-full">
