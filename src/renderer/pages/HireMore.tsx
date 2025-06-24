@@ -21,7 +21,7 @@ function HireMore(props: Props): React.ReactElement {
             type="link"
             onClick={() => {
               window.electron.app.sendEmail({
-                to: ['kaity@ai-paralegals.com'],
+                to: ['Contact@moi-ai.com'],
                 subject: 'test',
                 body: 'test',
               });

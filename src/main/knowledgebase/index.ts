@@ -185,7 +185,7 @@ export class KnowledgeBaseManager {
       id: notificationId,
       title: notificationId,
       type: 'progress',
-      description: '导入中...',
+      description: 'Importing...',
       percent: 0,
       duration: undefined,
       closeEnable: false,
@@ -199,9 +199,9 @@ export class KnowledgeBaseManager {
       });
       notificationManager.update({
         id: notificationId,
-        title: '导入知识库',
+        title: 'Importing...',
         type: 'progress',
-        description: `正在导入[${kbItem.name}]`,
+        description: `importing [${kbItem.name}]`,
         percent: (index / kbItems.length) * 100,
         duration: undefined,
         closeEnable: false,
@@ -249,16 +249,16 @@ export class KnowledgeBaseManager {
         kbItem.state = KnowledgeBaseItemState.Fail;
         await repository.save(kbItem);
         notificationManager.sendNotification(
-          `${kbItem.source} 导入失败`,
+          `${kbItem.source} Import failed`,
           'error',
         );
       }
     }
     notificationManager.update({
       id: notificationId,
-      title: '导入知识库',
+      title: 'Importing...',
       type: 'progress',
-      description: `导入完成`,
+      description: `Importing completed`,
       percent: 100,
       duration: 3,
       closeEnable: true,
@@ -384,9 +384,9 @@ export class KnowledgeBaseManager {
       const notificationId = uuidv4();
       notificationManager.create({
         id: notificationId,
-        title: '导入文件',
+        title: 'Importing...',
         type: 'progress',
-        description: '导入中...',
+        description: 'Importing...',
         percent: 0,
         duration: undefined,
         closeEnable: false,
@@ -398,9 +398,9 @@ export class KnowledgeBaseManager {
         const name = path.basename(file);
         notificationManager.update({
           id: notificationId,
-          title: '导入知识库',
+          title: 'Importing...',
           type: 'progress',
-          description: `正在导入[${name}]`,
+          description: `Importing [${name}]`,
           percent: (index / input.config.files.length) * 100,
           duration: undefined,
           closeEnable: false,
@@ -421,14 +421,17 @@ export class KnowledgeBaseManager {
           }
         } catch (err) {
           console.error(err);
-          notificationManager.sendNotification(`${name} 导入失败`, 'error');
+          notificationManager.sendNotification(
+            `${name} Import failed`,
+            'error',
+          );
         }
       }
       notificationManager.update({
         id: notificationId,
-        title: '导入知识库',
+        title: 'Importing...',
         type: 'progress',
-        description: `导入完成`,
+        description: `Importing completed`,
         percent: 100,
         duration: 3,
         closeEnable: true,
@@ -440,7 +443,7 @@ export class KnowledgeBaseManager {
         id: notificationId,
         title: notificationId,
         type: 'progress',
-        description: '导入中...',
+        description: 'Importing...',
         percent: 0,
         duration: undefined,
         closeEnable: false,
@@ -499,16 +502,16 @@ export class KnowledgeBaseManager {
 
         notificationManager.create({
           id: notificationId,
-          title: '导入知识库',
+          title: 'Importing...',
           type: 'progress',
-          description: '导入中...',
+          description: 'Importing...',
           percent: 0,
           duration: undefined,
           closeEnable: false,
         } as NotificationMessage);
       } catch {
         notificationManager.sendNotification(
-          `${input.config.sitemap} 导入失败`,
+          `${input.config.sitemap} Import failed`,
           'error',
         );
         return;
@@ -520,9 +523,9 @@ export class KnowledgeBaseManager {
           const doc = await urlToMarkdown(loc.trim());
           notificationManager.update({
             id: notificationId,
-            title: '导入知识库',
+            title: 'Importing...',
             type: 'progress',
-            description: `正在导入[${loc.trim()}]`,
+            description: `Importing [${loc.trim()}]`,
             percent: (index / sitemap.length) * 100,
             duration: undefined,
             closeEnable: false,
@@ -535,16 +538,16 @@ export class KnowledgeBaseManager {
           );
         } catch {
           notificationManager.sendNotification(
-            `${loc.trim()} 导入失败`,
+            `${loc.trim()} Import failed`,
             'error',
           );
         }
       }
       notificationManager.update({
         id: notificationId,
-        title: '导入知识库',
+        title: 'Importing...',
         type: 'progress',
-        description: `导入完成`,
+        description: `Importing completed`,
         percent: 100,
         duration: 3,
         closeEnable: true,

@@ -70,7 +70,7 @@ export default function KnowledgeBasePage() {
       },
     },
     {
-      label: 'VectorStore',
+      label: t('knowledge.vectorStoreType'),
       field: 'vectorStoreType',
       required: true,
       component: 'Select',
@@ -91,7 +91,7 @@ export default function KnowledgeBasePage() {
       field: 'embedding',
       required: true,
 
-      subLabel: '设置后将无法更改',
+      subLabel: t('knowledge.embedding_sublabel'),
       defaultValue: 'BAAI/bge-m3@moi',
       component: <ProviderSelect type="embedding" />,
       ifShow({ values }) {

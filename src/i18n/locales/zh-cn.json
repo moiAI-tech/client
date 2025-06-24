@@ -66,7 +66,9 @@
     "knowledgebase": "知识库",
     "private_database": "私有数据库",
     "public_database": "内置知识库",
-    "knowledgebase_description": "存放知识文档"
+    "knowledgebase_description": "存放知识文档",
+    "embedding_sublabel": "设置后将无法更改",
+    "vectorStoreType": "向量数据库"
   },
   "enable": "是否启用",
   "prompts": {
@@ -146,7 +148,10 @@
     "text": "文本",
     "web": "网页",
     "chunkOverlap": "重叠长度",
-    "recursive": "遍历文件夹"
+    "recursive": "遍历文件夹",
+    "recommended": "推荐",
+    "chunk_size_subLabel": "(推荐200) 请慎重调整",
+    "chunk_overlap_subLabel": "(推荐50) 请慎重调整"
   },
   "tools": {
     "addMcp": "添加MCP",

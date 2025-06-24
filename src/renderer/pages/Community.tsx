@@ -36,10 +36,10 @@ function Community(props: Props): React.ReactElement {
         <p>{t('hireMore.developmentMessage')}</p>
         <br></br>
         <ul>
-          <li>• 💬 {t('hireMore.professionalExchange')}</li>
-          <li>• 📚 {t('hireMore.knowledgeSharing')}</li>
-          <li>• 🆘 {t('hireMore.helpAnswer')}</li>
-          <li>• 🔔 {t('hireMore.dynamicReminder')}</li>
+          <li>• {t('hireMore.professionalExchange')}</li>
+          <li>• {t('hireMore.knowledgeSharing')}</li>
+          <li>• {t('hireMore.helpAnswer')}</li>
+          <li>• {t('hireMore.dynamicReminder')}</li>
         </ul>
         <br></br>
         <p>
@@ -48,7 +48,7 @@ function Community(props: Props): React.ReactElement {
             type="link"
             onClick={() => {
               window.electron.app.sendEmail({
-                to: ['kaity@ai-paralegals.com'],
+                to: ['Contact@moi-ai.com'],
                 subject: 'test',
                 body: 'test',
               });

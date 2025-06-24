@@ -66,7 +66,9 @@
     "knowledgebase": "Knowledge Base",
     "private_database": "Private Database",
     "public_database": "Built-in Knowledge Base",
-    "knowledgebase_description": "Stores knowledge documents"
+    "knowledgebase_description": "Stores knowledge documents",
+    "vectorStoreType": "Vector Store",
+    "embedding_sublabel": "Once set, it cannot be changed."
   },
   "enable": "Enable",
   "prompts": {
@@ -146,7 +148,10 @@
     "text": "Text",
     "web": "Web",
     "chunkOverlap": "Chunk Overlap",
-    "recursive": "Recursive Folder Traversal"
+    "recursive": "Recursive Folder Traversal",
+    "recommended": "recommended",
+    "chunk_size_subLabel": "(Recommended 200) Please adjust carefully",
+    "chunk_overlap_subLabel": "(Recommended 50) Please adjust carefully"
   },
   "tools": {
     "addMcp": "Add MCP",

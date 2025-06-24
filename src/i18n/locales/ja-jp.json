@@ -66,7 +66,9 @@
     "knowledgebase": "ナレッジベース",
     "private_database": "プライベートデータベース",
     "public_database": "組み込みナレッジベース",
-    "knowledgebase_description": "知識ドキュメントを保管"
+    "knowledgebase_description": "知識ドキュメントを保管",
+    "embedding_sublabel": "設定後は変更できません",
+    "vectorStoreType": "ベクトルデータベース"
   },
   "enable": "有効化",
   "prompts": {
@@ -146,7 +148,10 @@
     "text": "テキスト",
     "web": "ウェブ",
     "chunkOverlap": "重複長",
-    "recursive": "フォルダ再帰的走査"
+    "recursive": "フォルダ再帰的走査",
+    "recommended": "おすすめ",
+    "chunk_size_subLabel": "(推奨 200) 慎重に調整してください",
+    "chunk_overlap_subLabel": "(推奨 50) 慎重に調整してください"
   },
   "tools": {
     "addMcp": "MCP追加",
@@ -185,7 +190,7 @@
   "sidebar": {
     "settings": "設定",
     "theme": "テーマ",
-    "chat": "汎用助手",
+    "chat": "アシスタント",
     "chat_description": "迅速な対応とサポートを提供するオールラウンドなアシスタント",
     "providers": "モデル",
     "prompts": "プロンプト管理",

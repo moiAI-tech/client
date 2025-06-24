@@ -288,7 +288,7 @@ export default function Sidebar() {
             <div>
               <h1 className="text-xl font-bold">Moi AI</h1>
               <small className="text-sm font-bold text-gray-400">
-                Legai Workspace
+                Legal Workspace
               </small>
             </div>
           </div>

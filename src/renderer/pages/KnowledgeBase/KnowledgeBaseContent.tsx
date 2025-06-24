@@ -165,22 +165,33 @@ export default function KnowledgeBaseContent(props: KnowledgeBaseContentProps) {
     },
     {
       label: t('knowledgebase.chunkSize'),
+      subLabel: t('knowledgebase.chunk_size_subLabel'),
       field: 'chunkSize',
       component: 'Slider',
       defaultValue: 500,
       componentProps: {
-        min: 1,
+        min: 200,
         max: 2048,
+        marks: {
+          200: '200',
+          500: `500`,
+          2048: '2048',
+        },
       },
     },
     {
       label: t('knowledgebase.chunkOverlap'),
+      subLabel: t('knowledgebase.chunk_overlap_subLabel'),
       field: 'chunkOverlap',
       component: 'Slider',
       defaultValue: 50,
       componentProps: {
         min: 1,
         max: 1024,
+        marks: {
+          50: `50`,
+          1024: '1024',
+        },
       },
     },
     {
