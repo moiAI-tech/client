@@ -150,8 +150,8 @@
     "chunkOverlap": "重複長",
     "recursive": "フォルダ再帰的走査",
     "recommended": "おすすめ",
-    "chunk_size_subLabel": "(推奨 200) 慎重に調整してください",
-    "chunk_overlap_subLabel": "(推奨 50) 慎重に調整してください"
+    "chunk_size_subLabel": "(推奨 500) 慎重に調整してください",
+    "chunk_overlap_subLabel": "(推奨50) 慎重に調整してください"
   },
   "tools": {
     "addMcp": "MCP追加",

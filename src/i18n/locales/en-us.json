@@ -150,8 +150,8 @@
     "chunkOverlap": "Chunk Overlap",
     "recursive": "Recursive Folder Traversal",
     "recommended": "recommended",
-    "chunk_size_subLabel": "(Recommended 200) Please adjust carefully",
-    "chunk_overlap_subLabel": "(Recommended 50) Please adjust carefully"
+    "chunk_size_subLabel": "(Recommend 500) Please adjust carefully",
+    "chunk_overlap_subLabel": "(Recommend50) Please adjust carefully"
   },
   "tools": {
     "addMcp": "Add MCP",

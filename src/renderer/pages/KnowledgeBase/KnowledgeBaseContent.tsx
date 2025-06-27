@@ -189,6 +189,7 @@ export default function KnowledgeBaseContent(props: KnowledgeBaseContentProps) {
         min: 1,
         max: 1024,
         marks: {
+          0: `0`,
           50: `50`,
           1024: '1024',
         },

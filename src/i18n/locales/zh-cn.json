@@ -150,7 +150,7 @@
     "chunkOverlap": "重叠长度",
     "recursive": "遍历文件夹",
     "recommended": "推荐",
-    "chunk_size_subLabel": "(推荐200) 请慎重调整",
+    "chunk_size_subLabel": "(推荐500) 请慎重调整",
     "chunk_overlap_subLabel": "(推荐50) 请慎重调整"
   },
   "tools": {
