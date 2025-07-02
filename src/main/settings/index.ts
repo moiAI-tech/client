@@ -66,8 +66,7 @@ export interface GlobalSettings {
       apiKey: string | null;
     };
     serpapi: {
-      apiKey: string | null;
-    };
+      apiKey: string |
   };
   localModelPath: string | null;
   huggingfaceUrl: string | null;
