@@ -210,6 +210,20 @@ export async function getChatModel(
         httpAgent: settingsManager.getHttpAgent(),
       },
     });
+
+    llm = llm = new ChatOpenAI({
+      apiKey: provider.api_key,
+      modelName: model.name,
+      configuration: {
+        apiKey: provider.api_key,
+        baseURL: provider.api_base,
+        httpAgent: settingsManager.getHttpAgent(),
+      },
+      topP: options?.top_p,
+      maxTokens: options?.maxTokens,
+      temperature: options?.temperature,
+      streaming: options?.streaming,
+    });
   }
   if (tools.length > 0) {
     const llmWithTools = llm.bindTools(tools);

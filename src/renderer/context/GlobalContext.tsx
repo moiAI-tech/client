@@ -33,6 +33,7 @@ import { PromptsModal } from './PromptsModal';
 import { Prompt } from '@/entity/Prompt';
 import { KnowledgeBase } from '@/entity/KnowledgeBase';
 import { KnowledgeBaseModal } from './KnowledgeBaseModal';
+import { Session } from '@/lib/supabase';
 
 type GlobalContextProviderState = {
   tools: {
@@ -255,6 +256,7 @@ export function GlobalContextProvider({
         }
       },
     );
+
     return () => {
       window.electron.ipcRenderer.removeAllListeners('app:notification');
     };

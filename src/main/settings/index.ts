@@ -66,7 +66,8 @@ export interface GlobalSettings {
       apiKey: string | null;
     };
     serpapi: {
-      apiKey: string |
+      apiKey: string | null;
+    };
   };
   localModelPath: string | null;
   huggingfaceUrl: string | null;
@@ -571,6 +572,3 @@ class SettingsManager {
 
 const settingsManager = new SettingsManager();
 export default settingsManager;
-function getWindowsProxySettings(): { enable: boolean; proxy: string } {
-  throw new Error('Function not implemented.');
-}

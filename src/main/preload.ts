@@ -20,6 +20,13 @@ import { GlobalSettings } from './settings';
 import { ChatInputAttachment, ChatInputExtend, ChatMode } from '@/types/chat';
 import { Prompt, PromptGroup } from '@/entity/Prompt';
 import { ChatInfo } from './chat';
+import { AuthError } from '@/lib/supabase';
+import {
+  AuthResponse,
+  AuthTokenResponsePassword,
+  Session,
+  UserResponse,
+} from '@supabase/supabase-js';
 
 const electronHandler = {
   ipcRenderer: {
@@ -420,6 +427,23 @@ const electronHandler = {
       ipcRenderer.invoke('prompts:updateGroup', group),
     deleteGroup: (groupId: string) =>
       ipcRenderer.invoke('prompts:deleteGroup', groupId),
+  },
+  supabase: {
+    signIn: (data: {
+      email: string;
+      password: string;
+    }): Promise<AuthTokenResponsePassword> =>
+      ipcRenderer.invoke('supabase:signIn', data),
+    signUp: (data: {
+      email: string;
+      password: string;
+    }): Promise<AuthResponse> => ipcRenderer.invoke('supabase:signUp', data),
+    signOut: (): Promise<{ error: AuthError | null }> =>
+      ipcRenderer.invoke('supabase:signOut'),
+    getSession: (): Promise<Session | null> =>
+      ipcRenderer.invoke('supabase:getSession'),
+    getUser: (): Promise<UserResponse> =>
+      ipcRenderer.invoke('supabase:getUser'),
   },
 };
 

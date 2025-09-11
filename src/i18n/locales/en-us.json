@@ -238,5 +238,7 @@
   },
   "draft": {
     "startGenerateDetail": "If you need to start generating details, you can say \"Start generating.\" If you're not satisfied with the outline, you can tell me what needs to be adjusted."
-  }
+  },
+  "signin": "SignIn",
+  "signout": "SignOut"
 }

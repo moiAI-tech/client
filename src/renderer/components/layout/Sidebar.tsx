@@ -34,7 +34,7 @@ import {
 } from 'react-icons/fa';
 import logo from '../../../../assets/icon.png';
 import { FaBots, FaGear, FaRegMessage, FaUserGroup } from 'react-icons/fa6';
-import { Menu, Image, Button, message } from 'antd';
+import { Menu, Image, Button, message, Dropdown, Spin, Space } from 'antd';
 import {
   MenuDividerType,
   MenuItemType,
@@ -45,9 +45,12 @@ import ThemeToggle from '../theme/ThemeToggle';
 import i18n from '@/i18n';
 import { ChatMode } from '@/types/chat';
 import { t } from 'i18next';
+import LoginModal from '../common/LoginModal';
+import { useAuth } from '@/renderer/hooks/useAuth';
 
 export default function Sidebar() {
   const { theme, setTheme } = useTheme();
+  const { user, session, loading, error, signOut } = useAuth();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -256,10 +259,10 @@ export default function Sidebar() {
 
   useEffect(() => {}, []);
 
-  async function signOut() {
-    // await supabase.auth.signOut();
-    navigate('/chat');
-  }
+  // async function signOut() {
+  //   // await supabase.auth.signOut();
+  //   navigate('/chat');
+  // }
   useEffect(() => {
     const meun = meunList.find((x) => location.pathname.startsWith(x.href));
     if (meun) {
@@ -279,6 +282,10 @@ export default function Sidebar() {
       /> */}
       {/* <AboutModel open={showAboutModel} onOk={() => setShowAboutModel(false)} />
       <LoginModal open={showLoginModal} onOk={() => setShowLoginModal(false)} /> */}
+      <LoginModal
+        open={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
       <div className="">
         <div className="flex overflow-hidden flex-col h-full bg-gray-50 dark:bg-gray-800">
           <div className="flex flex-row gap-3 items-center p-4">
@@ -339,14 +346,64 @@ export default function Sidebar() {
             /> */}
             <div className="flex justify-center items-center px-4 py-4 w-full text-sm">
               {/* {appInfo.version} */}
-              <Button
+              {/* <Button
                 icon={<FaUserCircle size={30} />}
                 type="text"
                 size="large"
                 className="justify-start items-center w-full font-bold"
+                onClick={() => setShowLoginModal(true)}
               >
                 You
-              </Button>
+              </Button> */}
+
+              {session && (
+                <Dropdown
+                  menu={{
+                    items: [
+                      {
+                        key: 'signout',
+                        label: (
+                          <span className="text-red-500 font-bold flex flex-row justify-start items-center gap-2">
+                            <FaSignOutAlt size={20} />
+                            {t('signout')}
+                          </span>
+                        ),
+                      },
+                    ],
+                    onClick: (e) => {
+                      e.key === 'signout' && signOut();
+                    },
+                  }}
+                >
+                  <Button
+                    loading={loading}
+                    icon={<FaUserCircle size={30} />}
+                    type="text"
+                    size="large"
+                    block
+                    className="justify-start items-center w-full  font-bold "
+                  >
+                    <span
+                      className="overflow-hidden text-ellipsis"
+                      style={{ maxWidth: '100px' }}
+                    >
+                      {user.email}
+                    </span>
+                  </Button>
+                </Dropdown>
+              )}
+              {!session && (
+                <Button
+                  loading={loading}
+                  icon={<FaUserCircle size={30} />}
+                  type="text"
+                  size="large"
+                  className="justify-start items-center w-full font-bold "
+                  onClick={() => setShowLoginModal(true)}
+                >
+                  {t('signin')}
+                </Button>
+              )}
             </div>
           </div>
         </div>

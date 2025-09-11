@@ -35,6 +35,7 @@ import fs from 'fs';
 import { exec } from 'node:child_process';
 import { notificationManager } from './app/NotificationManager';
 import { DocxWrite } from './tools/DocxWrite';
+import supabaseManager from './supabase/supabaseManager';
 
 dbManager
   .init()
@@ -50,7 +51,7 @@ dbManager
     await serverManager.init();
     await appManager.init();
     await promptsManager.init();
-
+    await supabaseManager.init();
     // new DocxWrite().invoke({
     //   path: 'C:\\Users\\Administrator\\Desktop\\moi\\moi-test.docx',
     //   data: [
