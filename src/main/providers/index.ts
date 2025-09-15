@@ -26,6 +26,7 @@ import { getProviderModel } from '../utils/providerUtil';
 import { Transformers } from '../utils/transformers';
 import { notificationManager } from '../app/NotificationManager';
 import { AzureOpenAI } from '@langchain/openai';
+import { MoiProvider } from './MoiProvider';
 
 export class ProvidersManager {
   repository: Repository<Providers>;
@@ -77,24 +78,36 @@ export class ProvidersManager {
       provider = new Providers();
       provider.id = 'moi';
       provider.name = 'moi';
-      provider.models = [
-        {
-          name: 'gpt-4.1',
-          enable: true,
-        },
-      ];
+      // provider.models = [
+      //   {
+      //     name: 'moi-3',
+      //     enable: true,
+      //   },
+      // ];
     }
     provider.type = ProviderType.MOI;
-    provider.api_base =
-      'https://liual-m3x1eqyy-eastus2.cognitiveservices.azure.com';
-    provider.api_key =
-      '5TtLUkqGfpYSf5G7QiaIymDetka3dpTmoOWc39xqYSME5JUhgfYgJQQJ99AKACHYHv6XJ3w3AAAAACOG3MlK';
+    // provider.api_base =
+    //   'https://liual-m3x1eqyy-eastus2.cognitiveservices.azure.com';
+    // provider.api_key =
+    //   '5TtLUkqGfpYSf5G7QiaIymDetka3dpTmoOWc39xqYSME5JUhgfYgJQQJ99AKACHYHv6XJ3w3AAAAACOG3MlK';
     provider.static = true;
     provider.icon = 'file:///assets/icon.png';
     provider.extend_params = {
       apiVersion: '2024-10-21',
       siliconflowApiKey: 'sk-lmofxtqhjqvcqbgowugfpxcbtcghcogiwvvnsiznyjjgqumz',
     };
+    // moi-ai new provider
+    provider.type = ProviderType.MOI;
+    provider.api_base = 'https://www.moi-ai.com/api/v1';
+    provider.api_key = 'NULL';
+    provider.static = true;
+    provider.icon = 'file:///assets/icon.png';
+    provider.models = [
+      {
+        name: 'moi-3',
+        enable: true,
+      },
+    ];
     await this.repository.save(provider);
   };
 
@@ -336,26 +349,28 @@ export class ProvidersManager {
         // client.modelKwargs.
         //llm.lis
       } else if (connection.type === ProviderType.MOI) {
-        const endpoint = connection.api_base;
-        const apiVersion = connection.extend_params?.apiVersion || '2024-10-21';
-        const options = {
-          method: 'GET',
-          headers: {
-            accept: 'application/json',
-            'content-type': 'application/json',
-            Authorization: `Bearer ${connection.api_key}`,
-          },
-        };
-        const url = `${endpoint}/openai/models?api-version=${apiVersion}`;
-        const res = await fetch(url, options);
-        const models = await res.json();
-        return models.data.map((x) => {
-          return {
-            name: x.id,
-            enable:
-              connection.models?.find((z) => z.name == x.id)?.enable || false,
-          };
-        });
+        const moi = new MoiProvider({ provider: connection });
+        return await moi.getModelList();
+        // const endpoint = connection.api_base;
+        // const apiVersion = connection.extend_params?.apiVersion || '2024-10-21';
+        // const options = {
+        //   method: 'GET',
+        //   headers: {
+        //     accept: 'application/json',
+        //     'content-type': 'application/json',
+        //     Authorization: `Bearer ${connection.api_key}`,
+        //   },
+        // };
+        // const url = `${endpoint}/openai/models?api-version=${apiVersion}`;
+        // const res = await fetch(url, options);
+        // const models = await res.json();
+        // return models.data.map((x) => {
+        //   return {
+        //     name: x.id,
+        //     enable:
+        //       connection.models?.find((z) => z.name == x.id)?.enable || false,
+        //   };
+        // });
       }
     } catch (e) {
       console.log(e);

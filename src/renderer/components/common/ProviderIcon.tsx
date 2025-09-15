@@ -12,6 +12,7 @@ import googleIcon from '../../../../assets/model-logos/google.png';
 import deepseekIcon from '../../../../assets/model-logos/deepseek.png';
 import togetheraiIcon from '../../../../assets/model-logos/togetherai.png';
 import azureIcon from '../../../../assets/model-logos/azure_openai.png';
+import moiIcon from '../../../../assets/model-logos/moi.png';
 import { pathToFileURL } from 'url';
 import { cn } from '@/lib/utils';
 
@@ -33,6 +34,7 @@ const logos = {
   deepseek: deepseekIcon,
   togetherai: togetheraiIcon,
   azure_openai: azureIcon,
+  moi: moiIcon,
 };
 // eslint-disable-next-line react/function-component-definition
 const ProviderIcon: React.FC<ProviderIconProps> = ({

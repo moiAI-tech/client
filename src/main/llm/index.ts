@@ -22,6 +22,7 @@ import { ChatOptions } from '../../entity/Chat';
 import { ChatDeepSeek } from '@langchain/deepseek';
 import { ChatTogetherAI } from '@langchain/community/chat_models/togetherai';
 import { BaseTool } from '../tools/BaseTool';
+import { MoiProvider } from '../providers/MoiProvider';
 
 export async function getChatModel(
   providerName: string,
@@ -193,37 +194,25 @@ export async function getChatModel(
       //azureOpenAIApiVersion: provider.extend_params.apiVersion, // In Node.js defaults to process.env.AZURE_OPENAI_API_VERSION
     });
   } else if (provider?.type === ProviderType.MOI) {
-    const url = new URL(provider.api_base);
-    llm = new AzureChatOpenAI({
-      model: model.name,
-      temperature: options?.temperature,
-      maxTokens: options?.maxTokens,
-      apiKey: provider.api_key,
-      openAIApiVersion: provider.extend_params.apiVersion,
-      // maxRetries: 2,
-      azureOpenAIApiKey: provider.api_key, // In Node.js defaults to process.env.AZURE_OPENAI_API_KEY
-      azureOpenAIApiInstanceName: new URL(provider.api_base).host.split('.')[0], // In Node.js defaults to process.env.AZURE_OPENAI_API_INSTANCE_NAME
-      azureOpenAIApiDeploymentName: model.name,
-      streaming: options?.streaming,
-      topP: options?.top_p,
-      configuration: {
-        httpAgent: settingsManager.getHttpAgent(),
-      },
-    });
-
-    llm = llm = new ChatOpenAI({
-      apiKey: provider.api_key,
-      modelName: model.name,
-      configuration: {
-        apiKey: provider.api_key,
-        baseURL: provider.api_base,
-        httpAgent: settingsManager.getHttpAgent(),
-      },
-      topP: options?.top_p,
-      maxTokens: options?.maxTokens,
-      temperature: options?.temperature,
-      streaming: options?.streaming,
-    });
+    // const url = new URL(provider.api_base);
+    // llm = new AzureChatOpenAI({
+    //   model: model.name,
+    //   temperature: options?.temperature,
+    //   maxTokens: options?.maxTokens,
+    //   apiKey: provider.api_key,
+    //   openAIApiVersion: provider.extend_params.apiVersion,
+    //   // maxRetries: 2,
+    //   azureOpenAIApiKey: provider.api_key, // In Node.js defaults to process.env.AZURE_OPENAI_API_KEY
+    //   azureOpenAIApiInstanceName: new URL(provider.api_base).host.split('.')[0], // In Node.js defaults to process.env.AZURE_OPENAI_API_INSTANCE_NAME
+    //   azureOpenAIApiDeploymentName: model.name,
+    //   streaming: options?.streaming,
+    //   topP: options?.top_p,
+    //   configuration: {
+    //     httpAgent: settingsManager.getHttpAgent(),
+    //   },
+    // });
+    const moi = new MoiProvider({ provider });
+    llm = moi.getChatModel(model.name, options);
   }
   if (tools.length > 0) {
     const llmWithTools = llm.bindTools(tools);

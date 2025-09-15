@@ -90,7 +90,7 @@ class SettingsManager {
     proxy: 'system',
     language: 'zh-CN',
     defaultEmbedding: 'BAAI/bge-bge-m3@moi',
-    defaultLLM: 'gpt-4.1@moi',
+    defaultLLM: 'moi-3@moi',
     defaultAgent: null,
     defaultTitleLLM: null,
     defaultTTS: null,
