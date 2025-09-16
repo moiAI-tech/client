@@ -31,10 +31,20 @@ import {
   FaPen,
   FaUserPlus,
   FaPlus,
+  FaCreditCard,
 } from 'react-icons/fa';
 import logo from '../../../../assets/icon.png';
 import { FaBots, FaGear, FaRegMessage, FaUserGroup } from 'react-icons/fa6';
-import { Menu, Image, Button, message, Dropdown, Spin, Space } from 'antd';
+import {
+  Menu,
+  Image,
+  Button,
+  message,
+  Dropdown,
+  Spin,
+  Space,
+  Alert,
+} from 'antd';
 import {
   MenuDividerType,
   MenuItemType,
@@ -51,6 +61,7 @@ import { useAuth } from '@/renderer/hooks/useAuth';
 export default function Sidebar() {
   const { theme, setTheme } = useTheme();
   const { user, session, loading, error, signOut } = useAuth();
+  const [credits, setCredits] = useState(0);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -257,12 +268,19 @@ export default function Sidebar() {
     },
   ]);
 
-  useEffect(() => {}, []);
-
   // async function signOut() {
   //   // await supabase.auth.signOut();
   //   navigate('/chat');
   // }
+
+  const updateCredits = async () => {
+    const res = await window.electron.supabase.getCredits();
+    if (res.data && res.data.length > 0) {
+      setCredits(res.data.map((x) => x.balance).reduce((a, b) => a + b, 0));
+    } else {
+      setCredits(0);
+    }
+  };
   useEffect(() => {
     const meun = meunList.find((x) => location.pathname.startsWith(x.href));
     if (meun) {
@@ -273,6 +291,14 @@ export default function Sidebar() {
       setDefaultSelectedKeys([]);
     }
   }, [location]);
+
+  useEffect(() => {
+    if (session) {
+      updateCredits();
+    } else {
+      setCredits(0);
+    }
+  }, [session]);
   return (
     <>
       {/* <SettingModel
@@ -344,7 +370,7 @@ export default function Sidebar() {
               }}
               onSelect={({ item, key, keyPath, selectedKeys, domEvent }) => {}}
             /> */}
-            <div className="flex justify-center items-center px-4 py-4 w-full text-sm">
+            <div className="flex flex-col gap-2 justify-center items-center px-4 py-4 w-full text-sm">
               {/* {appInfo.version} */}
               {/* <Button
                 icon={<FaUserCircle size={30} />}
@@ -357,40 +383,46 @@ export default function Sidebar() {
               </Button> */}
 
               {session && (
-                <Dropdown
-                  menu={{
-                    items: [
-                      {
-                        key: 'signout',
-                        label: (
-                          <span className="text-red-500 font-bold flex flex-row justify-start items-center gap-2">
-                            <FaSignOutAlt size={20} />
-                            {t('signout')}
-                          </span>
-                        ),
+                <>
+                  <div className="flex flex-row gap-2 justify-between items-center p-2 w-full rounded-lg border border-gray-200">
+                    <FaCreditCard size={20} />
+                    <span className="text-sm font-bold">{credits} credits</span>
+                  </div>
+                  <Dropdown
+                    menu={{
+                      items: [
+                        {
+                          key: 'signout',
+                          label: (
+                            <span className="flex flex-row gap-2 justify-start items-center font-bold text-red-500">
+                              <FaSignOutAlt size={20} />
+                              {t('signout')}
+                            </span>
+                          ),
+                        },
+                      ],
+                      onClick: (e) => {
+                        e.key === 'signout' && signOut();
                       },
-                    ],
-                    onClick: (e) => {
-                      e.key === 'signout' && signOut();
-                    },
-                  }}
-                >
-                  <Button
-                    loading={loading}
-                    icon={<FaUserCircle size={30} />}
-                    type="text"
-                    size="large"
-                    block
-                    className="justify-start items-center w-full  font-bold "
+                    }}
                   >
-                    <span
-                      className="overflow-hidden text-ellipsis"
-                      style={{ maxWidth: '100px' }}
+                    <Button
+                      loading={loading}
+                      icon={<FaUserCircle size={30} />}
+                      type="text"
+                      size="large"
+                      block
+                      className="justify-start items-center w-full font-bold"
                     >
-                      {user.email}
-                    </span>
-                  </Button>
-                </Dropdown>
+                      <span
+                        className="overflow-hidden text-ellipsis"
+                        style={{ maxWidth: '100px' }}
+                      >
+                        {user.email}
+                      </span>
+                    </Button>
+                  </Dropdown>
+                </>
               )}
               {!session && (
                 <Button
@@ -398,7 +430,7 @@ export default function Sidebar() {
                   icon={<FaUserCircle size={30} />}
                   type="text"
                   size="large"
-                  className="justify-start items-center w-full font-bold "
+                  className="justify-start items-center w-full font-bold"
                   onClick={() => setShowLoginModal(true)}
                 >
                   {t('signin')}

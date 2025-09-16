@@ -444,6 +444,7 @@ const electronHandler = {
       ipcRenderer.invoke('supabase:getSession'),
     getUser: (): Promise<UserResponse> =>
       ipcRenderer.invoke('supabase:getUser'),
+    getCredits: (): Promise<any> => ipcRenderer.invoke('supabase:getCredits'),
   },
 };
 

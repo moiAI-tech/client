@@ -21,6 +21,7 @@ export class SupabaseManager {
   }
 
   public async initServer() {
+    if (!ipcMain) return;
     ipcMain.handle(
       'supabase:signIn',
       async (
@@ -47,6 +48,9 @@ export class SupabaseManager {
     });
     ipcMain.handle('supabase:getSession', async (event: IpcMainInvokeEvent) => {
       return await this.getSession();
+    });
+    ipcMain.handle('supabase:getCredits', async (event: IpcMainInvokeEvent) => {
+      return await this.getCredits();
     });
   }
 
@@ -151,7 +155,7 @@ export class SupabaseManager {
   }
 
   getCredits() {
-    return this.supabase.from('credits').select('*');
+    return this.supabase.from('credit_accounts').select('*');
   }
 }
 
