@@ -118,9 +118,6 @@ export class SupabaseManager {
         });
       console.log('Supabase AuthStateChange: ' + event, session);
     });
-
-    if (!ipcMain) return;
-    await this.initServer();
   }
 
   async getUser(): Promise<UserResponse> {
