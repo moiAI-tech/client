@@ -48,7 +48,7 @@ function Community(props: Props): React.ReactElement {
             type="link"
             onClick={() => {
               window.electron.app.sendEmail({
-                to: ['Contact@moi-ai.com'],
+                to: ['kaity@moi-ai.com'],
                 subject: 'test',
                 body: 'test',
               });

@@ -34,7 +34,8 @@ export const ListItem = forwardRef((props: ListItemProps) => {
     <div className="relative pr-2 mr-2 group">
       <Link
         className={`flex flex-row items-center justify-between px-3 py-2 transition rounded-xl dark:hover:bg-gray-900 hover:bg-gray-200 gap-2  ${
-          active ? 'text-gray-600 bg-gray-200 dark:bg-gray-900' : ''}`}
+          active ? 'text-gray-600 bg-gray-200 dark:bg-gray-900' : ''
+        }`}
         to={href}
         onClick={onClick}
       >
@@ -62,7 +63,7 @@ export const ListItem = forwardRef((props: ListItemProps) => {
         {menu && (
           <div className="flex-1 w-14">
             <Popover
-              placement="rightTop"
+              placement="leftTop"
               trigger="click"
               open={openMenu}
               onOpenChange={setOpenMenu}

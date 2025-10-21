@@ -139,7 +139,7 @@ export class SearchAgent extends BaseAgent {
     const kbIds = kbs.map((x) => x.id);
 
     const kbq = new KnowledgeBaseQuery({
-      knowledgebaseIds: chatOptions.kbList || kbIds,
+      knowledgebaseIds: chatOptions?.kbList || kbIds,
     });
     tools.push(kbq);
     const promptTemplate2 = ChatPromptTemplate.fromMessages([

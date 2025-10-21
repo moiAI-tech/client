@@ -1,6 +1,6 @@
 {
   "multiLanguage": "multi-language",
-  "login": "登陆",
+  "login": "登录",
   "freeDownloadApp": "免费下载App",
   "pricing": "定价",
   "windows": "Windows",
@@ -239,6 +239,6 @@
   "draft": {
     "startGenerateDetail": "需要开始生成明细的话可以跟我说“开始生成”,如果对大纲不满意的话可以跟我说需要调整的地方"
   },
-  "signin": "登陆",
+  "signin": "登录",
   "signout": "登出"
 }

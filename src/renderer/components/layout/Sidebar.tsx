@@ -299,6 +299,24 @@ export default function Sidebar() {
       setCredits(0);
     }
   }, [session]);
+
+  useEffect(() => {
+    const handerCreditChanged = () => {
+      updateCredits();
+    };
+
+    window.electron.ipcRenderer.on(
+      'supabase:credit-changed',
+      handerCreditChanged,
+    );
+
+    return () => {
+      window.electron.ipcRenderer.removeListener(
+        'supabase:credit-changed',
+        handerCreditChanged,
+      );
+    };
+  }, []);
   return (
     <>
       {/* <SettingModel

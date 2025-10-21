@@ -103,21 +103,18 @@ export default function ChatContent(props: {
     let res = await window.electron.chat.getChat(id);
     console.log(res);
     if (!res.model) {
+      const defaultLLM = await window.electron.providers.getDefaultLLM();
       if (res.mode == 'agent' || res.mode == 'supervisor') {
         const agent = await window.electron.db.get('agent', res.agent);
         console.log(agent);
-        if (agent?.model) {
-          await window.electron.db.update(
-            'chat',
-            { model: agent.model } as any,
-            {
-              id: res.id,
-            },
-          );
+        const model = agent?.model || defaultLLM;
+        if (model) {
+          await window.electron.db.update('chat', { model: model } as any, {
+            id: res.id,
+          });
           res = await window.electron.chat.getChat(id);
         }
       } else if (res.mode == 'default') {
-        const defaultLLM = await window.electron.providers.getDefaultLLM();
         if (defaultLLM) {
           await window.electron.db.update(
             'chat',

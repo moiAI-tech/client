@@ -89,6 +89,7 @@ import {
 import { isArray, isString } from '../utils/is';
 import { FileContentSearch, FileRead } from '../tools/FileSystemTool';
 import { Files } from '@/entity/Files';
+import { appManager } from '../app/AppManager';
 // const repository = dbManager.dataSource.getRepository(Chat);
 
 export interface ChatInfo extends Chat {
@@ -812,6 +813,8 @@ export class ChatManager {
     }
     console.info('chat end');
     event(`chat:end`, chat);
+
+    appManager.sendEvent('supabase:credit-changed', chat);
 
     if (isFirst) {
       const title = await this.autoGenerationTitle(chat, content);
