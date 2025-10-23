@@ -115,6 +115,7 @@ export default function GeneralSettings() {
           <div className="font-semibold">{t('settings.proxy')}</div>
           <div className="flex flex-row gap-2">
             <Select
+              disabled
               value={proxyMode}
               style={{ width: 150 }}
               onChange={(v) => onChangeProxy(v)}
@@ -165,6 +166,7 @@ export default function GeneralSettings() {
             {t('settings.defaultFileSavePath')}
           </div>
           <Input
+            disabled
             value={defaultFileSavePath}
             style={{ width: 200 }}
             onChange={(e) => setDefaultFileSavePath(e.target.value)}

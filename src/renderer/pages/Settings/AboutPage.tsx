@@ -19,11 +19,15 @@ export default function AboutPage() {
       </div>
       <div className="flex flex-col gap-4 p-4">
         <div className="flex flex-col gap-2">
-          <div className="font-semibold">Aime Box</div>
+          <div className="font-semibold">moi-ai</div>
           <div className="text-sm text-gray-500">
-            Aime Box is a tool agent box for producer.
+            Haiclaud Technology limited{' '}
+            <a href="mailto:kaity@moi-ai.com" className="text-blue-500">
+              kaity@moi-ai.com
+            </a>
           </div>
-          <Collapse
+
+          {/* <Collapse
             items={[
               {
                 key: '1',
@@ -39,7 +43,7 @@ export default function AboutPage() {
                 ),
               },
             ]}
-          />
+          /> */}
         </div>
       </div>
     </>

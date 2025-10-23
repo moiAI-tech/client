@@ -235,6 +235,7 @@ export default function Connections() {
                   <Button
                     onClick={() => onCreate()}
                     // shape="round"
+                    disabled
                     type="primary"
                     icon={<FaPlus />}
                   >

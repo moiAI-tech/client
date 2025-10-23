@@ -22,7 +22,6 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { NotificationMessage } from '@/types/notification';
 import { notificationManager } from '../app/NotificationManager';
-import transformers, { cat } from '@huggingface/transformers';
 import * as huggingfaceHub from '@huggingface/hub';
 import { filesize } from 'filesize';
 import compressing from 'compressing';
@@ -118,6 +117,7 @@ class SettingsManager {
 
   constructor() {
     this.settingsRepository = dbManager.dataSource.getRepository(Settings);
+
     if (!ipcMain) return;
     ipcMain.on('settings:getSettings', async (event) => {
       event.returnValue = await this.getSettings();
@@ -190,6 +190,14 @@ class SettingsManager {
   }
 
   public async loadSettings() {
+    await this.forceDefaultValue('defaultLLM', 'moi-3@moi');
+    await this.forceDefaultValue('defaultTitleLLM', 'moi-3@moi');
+    await this.forceDefaultValue('defaultVision', 'moi-3@moi');
+    await this.forceDefaultValue(
+      'defaultReranker',
+      'BAAI/bge-reranker-v2-m3@moi',
+    );
+    await this.forceDefaultValue('defaultEmbedding', 'BAAI/bge-bge-m3@moi');
     const res = await this.settingsRepository.find();
     const obj = this.settingsCache;
 
@@ -199,6 +207,18 @@ class SettingsManager {
     i18n.changeLanguage(obj.language);
     await this.updateProxy(obj.proxy);
     nativeTheme.themeSource = obj.theme.mode as 'system' | 'light' | 'dark';
+  }
+
+  async forceDefaultValue(key: string, value: any) {
+    let entity = await this.settingsRepository.findOne({
+      where: { id: key },
+    });
+    if (!entity) {
+      entity = new Settings();
+      entity.id = key;
+    }
+    entity.value = value || null;
+    await this.settingsRepository.save(entity);
   }
 
   public async set(key: string, value: any) {

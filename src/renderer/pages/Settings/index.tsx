@@ -44,15 +44,15 @@ export default function Settings() {
                 ),
                 // href: '/settings/general',
               },
-              {
-                key: 'defaultModel',
+              // {
+              //   key: 'defaultModel',
 
-                label: (
-                  <Link to="/settings/defaultModel">
-                    {t('settings.defaultModel')}
-                  </Link>
-                ),
-              },
+              //   label: (
+              //     <Link to="/settings/defaultModel">
+              //       {t('settings.defaultModel')}
+              //     </Link>
+              //   ),
+              // },
               // {
               //   key: 'defaultWebSearchEngine',
 
