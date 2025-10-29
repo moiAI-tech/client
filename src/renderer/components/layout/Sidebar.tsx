@@ -402,7 +402,14 @@ export default function Sidebar() {
 
               {session && (
                 <>
-                  <div className="flex flex-row gap-2 justify-between items-center p-2 w-full rounded-lg border border-gray-200">
+                  <div
+                    className="flex flex-row gap-2 justify-between items-center p-2 w-full rounded-lg border border-gray-200 cursor-pointer"
+                    onClick={() => {
+                      window.electron.app.openPath(
+                        'https://www.moi-ai.com/profile/billing',
+                      );
+                    }}
+                  >
                     <FaCreditCard size={20} />
                     <span className="text-sm font-bold">{credits} credits</span>
                   </div>

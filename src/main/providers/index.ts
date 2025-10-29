@@ -91,7 +91,7 @@ export class ProvidersManager {
     // provider.api_key =
     //   '5TtLUkqGfpYSf5G7QiaIymDetka3dpTmoOWc39xqYSME5JUhgfYgJQQJ99AKACHYHv6XJ3w3AAAAACOG3MlK';
     provider.static = true;
-    provider.icon = 'file:///assets/icon.png';
+    provider.icon = null;
     provider.extend_params = {
       apiVersion: '2024-10-21',
       siliconflowApiKey: 'sk-lmofxtqhjqvcqbgowugfpxcbtcghcogiwvvnsiznyjjgqumz',
@@ -101,7 +101,7 @@ export class ProvidersManager {
     provider.api_base = 'https://www.moi-ai.com/api/v1';
     provider.api_key = 'NULL';
     provider.static = true;
-    provider.icon = 'file:///assets/icon.png';
+    provider.icon = null;
     provider.models = [
       {
         name: 'moi-3',

@@ -240,6 +240,8 @@ export default function ChatContent(props: {
       getChat(id);
       const appInfo = window.electron.app.info();
       setIsPackaged(appInfo.isPackaged);
+      setChatInputMessage('');
+      setAttachments([]);
       scrollToBottom();
     } else {
       setCurrentChat(undefined);
