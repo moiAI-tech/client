@@ -229,7 +229,7 @@
     "contactInformation": "联系方式",
     "welcomeMessage": "如果您有特定的法律需求，或希望进一步了解AI助手的定制化功能，欢迎随时联系我们！我们的团队将为您提供个性化解决方案，帮助您更高效地处理法律事务。",
     "supportMessage": "我们期待为您提供更专业的支持！",
-    "weChat": "微信",
+    "weChat": "Follow us on X ",
     "developmentMessage": "这个模块还在开发中，如果您有如下需求:",
     "knowledgeSharing": "知识共享：获取最新法律解读、裁判趋势和合同模板",
     "professionalExchange": "专业交流：与律师、法务同行探讨实务问题",
@@ -240,5 +240,33 @@
     "startGenerateDetail": "需要开始生成明细的话可以跟我说“开始生成”,如果对大纲不满意的话可以跟我说需要调整的地方"
   },
   "signin": "登录",
-  "signout": "登出"
+  "signout": "登出",
+  "auth": {
+    "userAuthentication": "用户认证",
+    "authenticationError": "认证错误",
+    "loginTab": "登录",
+    "registerTab": "注册",
+    "email": "邮箱",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "emailPlaceholder": "请输入邮箱地址",
+    "passwordPlaceholder": "请输入密码",
+    "passwordPlaceholderWithHint": "请输入密码（至少6位）",
+    "confirmPasswordPlaceholder": "请再次输入密码",
+    "emailRequired": "请输入邮箱地址!",
+    "emailInvalid": "请输入有效的邮箱地址!",
+    "passwordRequired": "请输入密码!",
+    "passwordMinLength": "密码至少6位字符!",
+    "confirmPasswordRequired": "请确认密码!",
+    "passwordMismatch": "两次输入的密码不一致!",
+    "loginButton": "登录",
+    "registerButton": "注册",
+    "loginSuccess": "登录成功！",
+    "loginFailed": "登录失败",
+    "loginError": "登录过程中发生错误",
+    "registerSuccess": "注册成功！",
+    "registerFailed": "注册失败",
+    "registerError": "注册过程中发生错误",
+    "passwordMismatchError": "两次输入的密码不一致"
+  }
 }

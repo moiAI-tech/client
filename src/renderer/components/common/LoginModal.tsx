@@ -40,14 +40,14 @@ const LoginModal = React.forwardRef<LoginModalRef, LoginModalProps>(
         const result = await signIn(values.email, values.password);
 
         if (result.success) {
-          message.success('登录成功！');
+          message.success(t('auth.loginSuccess'));
           onSuccess?.(result.data?.user);
           onClose();
         } else {
-          message.error(result.error || '登录失败');
+          message.error(result.error || t('auth.loginFailed'));
         }
       } catch (err) {
-        message.error('登录过程中发生错误');
+        message.error(t('auth.loginError'));
       } finally {
         setSubmitLoading(false);
       }
@@ -55,7 +55,7 @@ const LoginModal = React.forwardRef<LoginModalRef, LoginModalProps>(
 
     const handleRegister = async (values: RegisterForm) => {
       if (values.password !== values.confirmPassword) {
-        message.error('两次输入的密码不一致');
+        message.error(t('auth.passwordMismatchError'));
         return;
       }
 
@@ -67,15 +67,15 @@ const LoginModal = React.forwardRef<LoginModalRef, LoginModalProps>(
           if (result.message) {
             message.info(result.message);
           } else {
-            message.success('注册成功！');
+            message.success(t('auth.registerSuccess'));
             onSuccess?.(result.data?.user);
             onClose();
           }
         } else {
-          message.error(result.error || '注册失败');
+          message.error(result.error || t('auth.registerFailed'));
         }
       } catch (err) {
-        message.error('注册过程中发生错误');
+        message.error(t('auth.registerError'));
       } finally {
         setSubmitLoading(false);
       }
@@ -87,7 +87,7 @@ const LoginModal = React.forwardRef<LoginModalRef, LoginModalProps>(
 
     return (
       <Modal
-        title="用户认证"
+        title={t('auth.userAuthentication')}
         open={open}
         onCancel={handleCancel}
         footer={null}
@@ -97,7 +97,7 @@ const LoginModal = React.forwardRef<LoginModalRef, LoginModalProps>(
         <div className="py-4">
           {error && (
             <Alert
-              message="认证错误"
+              message={t('auth.authenticationError')}
               description={error}
               type="error"
               showIcon
@@ -110,7 +110,7 @@ const LoginModal = React.forwardRef<LoginModalRef, LoginModalProps>(
             onChange={(key) => setActiveTab(key as 'login' | 'register')}
             centered
           >
-            <TabPane tab="登录" key="login">
+            <TabPane tab={t('auth.loginTab')} key="login">
               <Form
                 form={loginForm}
                 name="login"
@@ -120,31 +120,31 @@ const LoginModal = React.forwardRef<LoginModalRef, LoginModalProps>(
                 className="mt-4"
               >
                 <Form.Item
-                  label="邮箱"
+                  label={t('auth.email')}
                   name="email"
                   rules={[
-                    { required: true, message: '请输入邮箱地址!' },
-                    { type: 'email', message: '请输入有效的邮箱地址!' },
+                    { required: true, message: t('auth.emailRequired') },
+                    { type: 'email', message: t('auth.emailInvalid') },
                   ]}
                 >
                   <Input
                     prefix={<MailOutlined />}
-                    placeholder="请输入邮箱地址"
+                    placeholder={t('auth.emailPlaceholder')}
                     size="large"
                   />
                 </Form.Item>
 
                 <Form.Item
-                  label="密码"
+                  label={t('auth.password')}
                   name="password"
                   rules={[
-                    { required: true, message: '请输入密码!' },
-                    { min: 6, message: '密码至少6位字符!' },
+                    { required: true, message: t('auth.passwordRequired') },
+                    { min: 6, message: t('auth.passwordMinLength') },
                   ]}
                 >
                   <Input.Password
                     prefix={<LockOutlined />}
-                    placeholder="请输入密码"
+                    placeholder={t('auth.passwordPlaceholder')}
                     size="large"
                   />
                 </Form.Item>
@@ -157,13 +157,13 @@ const LoginModal = React.forwardRef<LoginModalRef, LoginModalProps>(
                     size="large"
                     loading={submitLoading || loading}
                   >
-                    登录
+                    {t('auth.loginButton')}
                   </Button>
                 </Form.Item>
               </Form>
             </TabPane>
 
-            <TabPane tab="注册" key="register">
+            <TabPane tab={t('auth.registerTab')} key="register">
               <Form
                 form={registerForm}
                 name="register"
@@ -173,48 +173,51 @@ const LoginModal = React.forwardRef<LoginModalRef, LoginModalProps>(
                 className="mt-4"
               >
                 <Form.Item
-                  label="邮箱"
+                  label={t('auth.email')}
                   name="email"
                   rules={[
-                    { required: true, message: '请输入邮箱地址!' },
-                    { type: 'email', message: '请输入有效的邮箱地址!' },
+                    { required: true, message: t('auth.emailRequired') },
+                    { type: 'email', message: t('auth.emailInvalid') },
                   ]}
                 >
                   <Input
                     prefix={<MailOutlined />}
-                    placeholder="请输入邮箱地址"
+                    placeholder={t('auth.emailPlaceholder')}
                     size="large"
                   />
                 </Form.Item>
 
                 <Form.Item
-                  label="密码"
+                  label={t('auth.password')}
                   name="password"
                   rules={[
-                    { required: true, message: '请输入密码!' },
-                    { min: 6, message: '密码至少6位字符!' },
+                    { required: true, message: t('auth.passwordRequired') },
+                    { min: 6, message: t('auth.passwordMinLength') },
                   ]}
                 >
                   <Input.Password
                     prefix={<LockOutlined />}
-                    placeholder="请输入密码（至少6位）"
+                    placeholder={t('auth.passwordPlaceholderWithHint')}
                     size="large"
                   />
                 </Form.Item>
 
                 <Form.Item
-                  label="确认密码"
+                  label={t('auth.confirmPassword')}
                   name="confirmPassword"
                   dependencies={['password']}
                   rules={[
-                    { required: true, message: '请确认密码!' },
+                    {
+                      required: true,
+                      message: t('auth.confirmPasswordRequired'),
+                    },
                     ({ getFieldValue }) => ({
                       validator(_, value) {
                         if (!value || getFieldValue('password') === value) {
                           return Promise.resolve();
                         }
                         return Promise.reject(
-                          new Error('两次输入的密码不一致!'),
+                          new Error(t('auth.passwordMismatch')),
                         );
                       },
                     }),
@@ -222,7 +225,7 @@ const LoginModal = React.forwardRef<LoginModalRef, LoginModalProps>(
                 >
                   <Input.Password
                     prefix={<LockOutlined />}
-                    placeholder="请再次输入密码"
+                    placeholder={t('auth.confirmPasswordPlaceholder')}
                     size="large"
                   />
                 </Form.Item>
@@ -235,7 +238,7 @@ const LoginModal = React.forwardRef<LoginModalRef, LoginModalProps>(
                     size="large"
                     loading={submitLoading || loading}
                   >
-                    注册
+                    {t('auth.registerButton')}
                   </Button>
                 </Form.Item>
               </Form>
