@@ -1,6 +1,6 @@
 {
   "multiLanguage": "multi-language",
-  "login": "ログイン",
+  "login": "登録",
   "freeDownloadApp": "無料ダウンロードアプリ",
   "pricing": "価格設定",
   "windows": "Windows",
@@ -245,7 +245,7 @@
     "userAuthentication": "ユーザー認証",
     "authenticationError": "認証エラー",
     "loginTab": "ログイン",
-    "registerTab": "登録",
+    "registerTab": "新規登録",
     "email": "メールアドレス",
     "password": "パスワード",
     "confirmPassword": "パスワード確認",
