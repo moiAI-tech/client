@@ -1,7 +1,7 @@
 {
   "name": "moi",
   "description": "moi is a tool agent box for producer.",
-  "version": "0.2.6",
+  "version": "1.0.0",
   "private": true,
   "keywords": [
     "agent",

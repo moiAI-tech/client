@@ -27,7 +27,7 @@ export default function AboutPage() {
             </a>
           </div>
 
-          {/* <Collapse
+          <Collapse
             items={[
               {
                 key: '1',
@@ -43,7 +43,7 @@ export default function AboutPage() {
                 ),
               },
             ]}
-          /> */}
+          />
         </div>
       </div>
     </>
