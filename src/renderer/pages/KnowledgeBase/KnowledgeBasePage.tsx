@@ -69,42 +69,42 @@ export default function KnowledgeBasePage() {
         mode: 'tags',
       },
     },
-    {
-      label: t('knowledge.vectorStoreType'),
-      field: 'vectorStoreType',
-      required: true,
-      component: 'Select',
-      defaultValue: 'lancedb',
-      componentProps: {
-        options: [
-          { value: 'lancedb', label: 'lancedb' },
-          // { value: 'pgvector', label: 'PGVector' },
-          // { value: 'milvus', label: 'Milvus' },
-        ],
-      },
-      ifShow({ values }) {
-        return !values.id;
-      },
-    },
-    {
-      label: 'Embedding',
-      field: 'embedding',
-      required: true,
+    // {
+    //   label: t('knowledge.vectorStoreType'),
+    //   field: 'vectorStoreType',
+    //   required: true,
+    //   component: 'Select',
+    //   defaultValue: 'lancedb',
+    //   componentProps: {
+    //     options: [
+    //       { value: 'lancedb', label: 'lancedb' },
+    //       // { value: 'pgvector', label: 'PGVector' },
+    //       // { value: 'milvus', label: 'Milvus' },
+    //     ],
+    //   },
+    //   ifShow({ values }) {
+    //     return !values.id;
+    //   },
+    // },
+    // {
+    //   label: 'Embedding',
+    //   field: 'embedding',
+    //   required: true,
 
-      subLabel: t('knowledge.embedding_sublabel'),
-      defaultValue: 'BAAI/bge-m3@moi',
-      component: <ProviderSelect type="embedding" />,
-      ifShow({ values }) {
-        return !values.id;
-      },
-    },
-    {
-      label: 'Reranker',
-      field: 'reranker',
-      required: false,
-      defaultValue: 'BAAI/bge-reranker-v2-m3@moi',
-      component: <ProviderSelect type="reranker" allowClear />,
-    },
+    //   subLabel: t('knowledge.embedding_sublabel'),
+    //   defaultValue: 'BAAI/bge-m3@moi',
+    //   component: <ProviderSelect type="embedding" />,
+    //   ifShow({ values }) {
+    //     return !values.id;
+    //   },
+    // },
+    // {
+    //   label: 'Reranker',
+    //   field: 'reranker',
+    //   required: false,
+    //   defaultValue: 'BAAI/bge-reranker-v2-m3@moi',
+    //   component: <ProviderSelect type="reranker" allowClear />,
+    // },
   ] as FormSchema[];
   const getData = async () => {
     const res = window.electron.db.getMany<KnowledgeBase>('knowledgebase', {});

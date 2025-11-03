@@ -608,17 +608,12 @@ export default function ChatContent(props: {
                 </div>
                 <div className="flex flex-row justify-between items-center w-full">
                   <div className="flex gap-2 items-center">
-                    <Tooltip
-                      placement="top"
-                      title={<strong>{t('chat.llm')}</strong>}
-                    >
-                      <ProviderSelect
-                        type="llm"
-                        value={currentModel}
-                        onChange={onChangeCurrentModel}
-                        style={{ width: '200px' }}
-                      />
-                    </Tooltip>
+                    <ProviderSelect
+                      type="llm"
+                      value={currentModel}
+                      onChange={onChangeCurrentModel}
+                      style={{ width: '200px' }}
+                    />
 
                     {false && (
                       <Tooltip

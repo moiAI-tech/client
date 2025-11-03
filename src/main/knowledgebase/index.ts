@@ -813,7 +813,13 @@ export class KnowledgeBaseManager {
     const kbId = uuidv4();
     await dbManager.insert('knowledgebase', {
       id: kbId,
+
       ...input,
+      ...{
+        vectorStoreType: 'lancedb',
+        embedding: 'BAAI/bge-m3@moi',
+        reranker: 'BAAI/bge-reranker-v2-m3@moi',
+      },
     });
     const v = await this.getVectorStore(kbId);
   };

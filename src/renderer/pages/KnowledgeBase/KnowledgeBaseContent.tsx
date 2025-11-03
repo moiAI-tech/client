@@ -279,7 +279,7 @@ export default function KnowledgeBaseContent(props: KnowledgeBaseContentProps) {
         { text: t('common.disable'), value: false },
       ],
       filterMultiple: false,
-      filteredValue: filteredInfo.isEnable || null,
+      filteredValue: filteredInfo?.isEnable || null,
       render: (text, record, index) => {
         return (
           <Switch
@@ -302,7 +302,7 @@ export default function KnowledgeBaseContent(props: KnowledgeBaseContentProps) {
         { text: t('common.fail'), value: 'fail' },
         { text: t('common.success'), value: 'success' },
       ],
-      filteredValue: filteredInfo.state || null,
+      filteredValue: filteredInfo?.state || null,
       render: (text, record, index) => {
         if (record.state == 'pending') {
           return <FaSpinner className="w-full animate-spin"></FaSpinner>;
