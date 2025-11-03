@@ -239,7 +239,7 @@
   "draft": {
     "startGenerateDetail": "明細の生成を開始する場合は「生成開始」とお伝えください。もし概要に満足できない場合は、調整が必要な点をお知らせください。"
   },
-  "signin": "ログイン",
+  "signin": "登録",
   "signout": "ログアウト",
   "auth": {
     "userAuthentication": "ユーザー認証",
