@@ -1,6 +1,6 @@
 {
   "multiLanguage": "multi-language",
-  "login": "ログイン",
+  "login": "登録",
   "freeDownloadApp": "無料ダウンロードアプリ",
   "pricing": "価格設定",
   "windows": "Windows",
@@ -239,13 +239,13 @@
   "draft": {
     "startGenerateDetail": "明細の生成を開始する場合は「生成開始」とお伝えください。もし概要に満足できない場合は、調整が必要な点をお知らせください。"
   },
-  "signin": "ログイン",
+  "signin": "登録",
   "signout": "ログアウト",
   "auth": {
     "userAuthentication": "ユーザー認証",
     "authenticationError": "認証エラー",
     "loginTab": "ログイン",
-    "registerTab": "登録",
+    "registerTab": "新規登録",
     "email": "メールアドレス",
     "password": "パスワード",
     "confirmPassword": "パスワード確認",
