@@ -164,7 +164,17 @@ const LoginModal = React.forwardRef<LoginModalRef, LoginModalProps>(
             </TabPane>
 
             <TabPane tab={t('auth.registerTab')} key="register">
-              <Form
+              <div className="flex justify-center items-center">
+                <Button
+                  onClick={() => {
+                    window.electron.app.openPath('https://www.moi-ai.com');
+                  }}
+                >
+                  {t('auth.goto_register')}
+                </Button>
+              </div>
+
+              {/* <Form
                 form={registerForm}
                 name="register"
                 onFinish={handleRegister}
@@ -241,7 +251,7 @@ const LoginModal = React.forwardRef<LoginModalRef, LoginModalProps>(
                     {t('auth.registerButton')}
                   </Button>
                 </Form.Item>
-              </Form>
+              </Form> */}
             </TabPane>
           </Tabs>
         </div>

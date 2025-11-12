@@ -267,6 +267,7 @@
     "registerSuccess": "注册成功！",
     "registerFailed": "注册失败",
     "registerError": "注册过程中发生错误",
-    "passwordMismatchError": "两次输入的密码不一致"
+    "passwordMismatchError": "两次输入的密码不一致",
+    "goto_register": "去注册"
   }
 }

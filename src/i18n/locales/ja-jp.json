@@ -267,6 +267,7 @@
     "registerSuccess": "登録に成功しました！",
     "registerFailed": "登録に失敗しました",
     "registerError": "登録中にエラーが発生しました",
-    "passwordMismatchError": "入力されたパスワードが一致しません"
+    "passwordMismatchError": "入力されたパスワードが一致しません",
+    "goto_register": "注册"
   }
 }

@@ -267,6 +267,7 @@
     "registerSuccess": "Registration successful!",
     "registerFailed": "Registration failed",
     "registerError": "An error occurred during registration",
-    "passwordMismatchError": "The passwords entered do not match"
+    "passwordMismatchError": "The passwords entered do not match",
+    "goto_register": "Goto Register"
   }
 }
