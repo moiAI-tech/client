@@ -1,7 +1,7 @@
 {
   "name": "moi",
-  "description": "moi is a tool agent box for producer.",
-  "version": "1.0.0",
+  "description": "moi is a AI legal tool.",
+  "version": "1.0.2",
   "private": true,
   "keywords": [
     "agent",
@@ -292,12 +292,17 @@
     "appId": "com.moi.app",
     "asar": true,
     "asarUnpack": [
-      "**\\*.{node,dll}",
+            "**/*.{node,dll}",
       "**/node_modules/sharp/**/*",
       "**/node_modules/@img/**/*",
       "**/node_modules/undici/**/*",
       "**/node_modules/sherpa-onnx-node/**/*",
-      "**/node_modules/playwright/**/*"
+      "**/node_modules/sherpa-onnx-win-x64/**/*",
+      "**/node_modules/onnxruntime-node/**/*",
+      "**/node_modules/@huggingface/transformers/**/*",
+      "**/node_modules/playwright/**/*",
+      "**/node_modules/better-sqlite3/**/*",
+      "**/node_modules/@lancedb/**/*"
     ],
     "files": [
       "dist",
@@ -336,8 +341,18 @@
     },
     "win": {
       "target": [
-        "nsis"
-      ]
+        "nsis",
+        "appx"
+      ],
+      "icon": "icon.png"
+    },
+    "appx": {
+      "displayName": "MoiAI",
+      "identityName": "MoiAi.MoiAI",
+      "publisher": "CN=9949892F-962A-41B4-87F6-C8E4C5B707F2",
+      "publisherDisplayName": "HAICLAUD TECHNOLOGY LIMITED",
+      "backgroundColor": "#FFFFFF",
+      "applicationId": "MoiAI"
     },
     "nsis": {
       "oneClick": false,
