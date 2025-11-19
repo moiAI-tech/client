@@ -1,7 +1,7 @@
 {
   "name": "moi",
   "description": "moi is a AI legal tool.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "keywords": [
     "agent",
@@ -292,7 +292,7 @@
     "appId": "com.moi.app",
     "asar": true,
     "asarUnpack": [
-            "**/*.{node,dll}",
+      "**/*.{node,dll}",
       "**/node_modules/sharp/**/*",
       "**/node_modules/@img/**/*",
       "**/node_modules/undici/**/*",
