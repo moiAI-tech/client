@@ -86,10 +86,6 @@ export class ProvidersManager {
       // ];
     }
     provider.type = ProviderType.MOI;
-    // provider.api_base =
-    //   'https://liual-m3x1eqyy-eastus2.cognitiveservices.azure.com';
-    // provider.api_key =
-    //   '5TtLUkqGfpYSf5G7QiaIymDetka3dpTmoOWc39xqYSME5JUhgfYgJQQJ99AKACHYHv6XJ3w3AAAAACOG3MlK';
     provider.static = true;
     provider.icon = null;
     provider.extend_params = {
