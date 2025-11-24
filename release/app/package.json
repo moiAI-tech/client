@@ -1,0 +1,35 @@
+{
+  "name": "moi",
+  "version": "1.0.3",
+  "description": "moi is a AI legal tool.",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "moi",
+    "email": "781172480@qq.com",
+    "url": "https://github.com/AimeBox/aime-box"
+  },
+  "main": "./dist/main/main.js",
+  "scripts": {
+    "rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
+    "postinstall": "npm run rebuild && npm run link-modules",
+    "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.5.2",
+    "@lancedb/lancedb": "^0.12.0",
+    "@langchain/community": "^0.3.45",
+    "@langchain/core": "^0.3.55",
+    "@langchain/langgraph-checkpoint-sqlite": "^0.1.4",
+    "@modelcontextprotocol/sdk": "^1.7.0",
+    "apache-arrow": "^17.0.0",
+    "better-sqlite3": "^11.10.0",
+    "color-convert": "^3.1.0",
+    "langchain": "^0.3.24",
+    "playwright": "^1.50.1",
+    "sharp": "^0.33.5",
+    "sherpa-onnx-node": "^1.12.0",
+    "sqlite3": "^5.1.7",
+    "typeorm": "^0.3.20",
+    "undici": "^7.10.0"
+  }
+}
