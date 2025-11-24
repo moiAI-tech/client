@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 # Moi
 
@@ -233,3 +234,8 @@ author: 781172480@qq.com
 
 This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
 
+=======
+# client
+This is a public client application of MoiAI application.
+Please follow the step-by-step instruction to download and install the MoiAI lastest install package, and try the most powerful legal assistant.
+>>>>>>> 4d5ac04f7c39a9c591c9de6f98e4cf522910a6e4
