@@ -1,0 +1,36 @@
+name: Publish signed release
+
+on:
+  push:
+    tags:
+      - 'v*'       # 当 build.yml 推送 tag 后自动触发
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read version from tag
+        id: tag
+        run: echo "VERSION=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          echo "CHANGELOG<<EOF" >> $GITHUB_ENV
+          echo "📦 自动发布版本: ${{ env.VERSION }}" >> $GITHUB_ENV
+          echo "" >> $GITHUB_ENV
+          echo "$(git log -5 --pretty=format:'- %s (%h)')" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Create GitHub Release and upload signed build
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/**/*.exe
+          body: ${{ env.CHANGELOG }}
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,50 @@
+name: Build and Package App
+
+on:
+  push:
+    branches: [ main ]     # 每次推送到 main 都会触发构建（后续可自动打版本）
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Cache npm modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install dependencies (CI mode)
+        run: npm ci
+
+      - name: Build and Package
+        run: npm run package
+
+      - name: Upload unsigned build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-build
+          path: dist/**
+
+      # 👇自动读取 package.json 的 version 并创建 Tag
+      - name: Get version from package.json
+        id: get_version
+        run: echo "VERSION=v$(node -p \"require('./package.json').version\")" >> $GITHUB_ENV
+
+      - name: Create version tag
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag -a "${VERSION}" -m "Auto release version ${VERSION}"
+          git push origin "${VERSION}"
