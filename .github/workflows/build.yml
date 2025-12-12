@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies (CI mode)
         run: npm ci
 
+      - name: Update Browserslist DB
+        run: npx update-browserslist-db@latest
+
       - name: Build and Package
         run: npm run package
 
