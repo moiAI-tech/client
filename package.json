@@ -1,19 +1,19 @@
 {
   "name": "moi",
   "description": "moi is a AI legal tool.",
-  "version": "1.0.3",
+  "version": "1.0.0",
   "private": true,
   "keywords": [
     "agent",
     "assistant",
     "chat"
   ],
-  "homepage": "https://github.com/AimeBox/aime-box#readme",
+  "homepage": "https://github.com/moiAI-tech/client/blob/main/README.md",
   "bugs": {
-    "url": "https://github.com/AimeBox/aime-box/issues"
+    "url": "https://github.com/moiAI-tech/client/issues"
   },
   "license": "Apache-2.0",
-  "author": "moi <781172480@qq.com>",
+  "author": "moi <70763652@qq.com>",
   "main": "./.erb/dll/main.bundle.dev.js",
   "scripts": {
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
@@ -86,6 +86,7 @@
     "electron-debug": "^4.1.0",
     "electron-log": "^5.3.2",
     "electron-updater": "^6.3.9",
+    "firebase": "^12.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.3.0"
@@ -104,7 +105,7 @@
     "@lancedb/lancedb": "^0.12.0",
     "@langchain/anthropic": "^0.3.13",
     "@langchain/baidu-qianfan": "^0.1.0",
-    "@langchain/community": "^0.3.45",
+    "@langchain/community": "^0.3.42",
     "@langchain/core": "^0.3.55",
     "@langchain/deepseek": "^0.0.1",
     "@langchain/google-genai": "^0.2.10",
@@ -174,7 +175,6 @@
     "electron": "^35.0.2",
     "electron-builder": "^25.1.8",
     "electron-devtools-installer": "^4.0.0",
-    "electron-store": "^10.1.0",
     "electronmon": "^2.0.3",
     "emoji-picker-react": "^4.12.0",
     "epub2": "^3.0.2",
@@ -292,17 +292,12 @@
     "appId": "com.moi.app",
     "asar": true,
     "asarUnpack": [
-      "**/*.{node,dll}",
+      "**\\*.{node,dll}",
       "**/node_modules/sharp/**/*",
       "**/node_modules/@img/**/*",
       "**/node_modules/undici/**/*",
       "**/node_modules/sherpa-onnx-node/**/*",
-      "**/node_modules/sherpa-onnx-win-x64/**/*",
-      "**/node_modules/onnxruntime-node/**/*",
-      "**/node_modules/@huggingface/transformers/**/*",
-      "**/node_modules/playwright/**/*",
-      "**/node_modules/better-sqlite3/**/*",
-      "**/node_modules/@lancedb/**/*"
+      "**/node_modules/playwright/**/*"
     ],
     "files": [
       "dist",
@@ -341,18 +336,8 @@
     },
     "win": {
       "target": [
-        "nsis",
-        "appx"
-      ],
-      "icon": "icon.png"
-    },
-    "appx": {
-      "displayName": "MoiAI",
-      "identityName": "MoiAi.MoiAI",
-      "publisher": "CN=9949892F-962A-41B4-87F6-C8E4C5B707F2",
-      "publisherDisplayName": "HAICLAUD TECHNOLOGY LIMITED",
-      "backgroundColor": "#FFFFFF",
-      "applicationId": "MoiAI"
+        "nsis"
+      ]
     },
     "nsis": {
       "oneClick": false,
@@ -376,8 +361,8 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "Aime Box",
-      "repo": "aime-box"
+      "owner": "MoiAI",
+      "repo": "moiAI-tech/client"
     }
   },
   "devEngines": {

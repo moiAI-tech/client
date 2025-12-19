@@ -1,12 +1,12 @@
 {
   "name": "moi",
-  "version": "1.0.3",
+  "version": "1.0.0",
   "description": "moi is a AI legal tool.",
   "license": "Apache-2.0",
   "author": {
     "name": "moi",
-    "email": "781172480@qq.com",
-    "url": "https://github.com/AimeBox/aime-box"
+    "email": "70763652@qq.com",
+    "url": "https://github.com/moiAI-tech/client"
   },
   "main": "./dist/main/main.js",
   "scripts": {
